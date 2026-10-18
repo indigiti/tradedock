@@ -43,7 +43,7 @@ internal sealed partial class StrategiesView
     private readonly ListBox _tradesList = new() { Background = Brushes.Transparent };
     private readonly Grid _metricsGrid = new() { ColumnDefinitions = new ColumnDefinitions("*,20,*") };
     private readonly TextBox _logBox = new() { IsReadOnly = true, AcceptsReturn = true, FontFamily = new FontFamily("Menlo, monospace"), FontSize = 11.5, TextWrapping = TextWrapping.NoWrap };
-    private readonly EquityChart _mcChart = new() { Height = 260, EmptyText = "Corré la simulación para ver caminos posibles" };
+    private readonly EquityChart _mcChart = new() { Height = 260, EmptyText = "Run simulation to view possible outcomes" };
     private readonly WrapPanel _mcKpis = new() { ItemSpacing = 10, LineSpacing = 10 };
     private readonly Panel _resultsPanel = new();
     private Control _emptyResults = null!;
@@ -60,7 +60,7 @@ internal sealed partial class StrategiesView
         _runButton = Ui.Button("Correr backtest", MaterialIconKind.Play, () => _ = RunBacktestAsync(), "primary");
         _stopButton = Ui.Button("Stop", MaterialIconKind.Stop, () => _cts?.Cancel());
         _stopButton.IsEnabled = false;
-        _limitMode.Items.Add(new ComboBoxItem { Content = "Solo si el precio lo atraviesa", Tag = LimitFillMode.TradeThrough });
+        _limitMode.Items.Add(new ComboBoxItem { Content = "Only when price trades through it", Tag = LimitFillMode.TradeThrough });
         _limitMode.Items.Add(new ComboBoxItem { Content = "Apenas lo toca (optimista)", Tag = LimitFillMode.Touch });
         _limitMode.SelectedIndex = 0;
         foreach (var (id, label) in new[] { ("", "UTC"), ("America/Argentina/Buenos_Aires", "Buenos Aires"), ("America/New_York", "Nueva York"), ("America/Chicago", "Chicago (CME)"), ("Europe/London", "Londres") })
@@ -126,7 +126,7 @@ internal sealed partial class StrategiesView
         // resultados
         var resultTabs = new Ui.Segmented<string>(new[]
         {
-            ("trades", "Operaciones", (string?)null),
+            ("trades", "Trades", (string?)null),
             ("metrics", "Metrics", (string?)null),
             ("market", "By market", (string?)"Cómo le fue en rango, mixto o tendencia y con volatilidad baja, normal o alta; y volver a correrlo solo en las condiciones que elijas"),
             ("mc", "Monte Carlo", (string?)null),
@@ -168,8 +168,8 @@ internal sealed partial class StrategiesView
         results.Children.Add(bottom);
         _emptyResults = Ui.V(10,
             Ui.Icon(MaterialIconKind.ChartBellCurveCumulative, 40, Ui.Text2),
-            new TextBlock { Text = "Elegí datos y parámetros y tocá «Correr backtest»", Classes = { "muted" }, HorizontalAlignment = HorizontalAlignment.Center },
-            new TextBlock { Text = "La simulación usa cada operación real guardada: entradas, stops y objetivos se llenan como en el mercado.", Classes = { "faint", "small" }, HorizontalAlignment = HorizontalAlignment.Center });
+            new TextBlock { Text = "Select data and parameters, then click Run backtest", Classes = { "muted" }, HorizontalAlignment = HorizontalAlignment.Center },
+            new TextBlock { Text = "Simulation uses recorded trades to model entry, stop, and target fills.", Classes = { "faint", "small" }, HorizontalAlignment = HorizontalAlignment.Center });
         _emptyResults.HorizontalAlignment = HorizontalAlignment.Center;
         _emptyResults.VerticalAlignment = VerticalAlignment.Center;
         ((StackPanel)_emptyResults).Children[0].HorizontalAlignment = HorizontalAlignment.Center;
@@ -244,7 +244,7 @@ internal sealed partial class StrategiesView
         if (_current?.Type == null && !await CompileAsync()) return;
         if (TopLevel.GetTopLevel(this) is not TradingHub.App.Windows.MainWindow main || main.Trading.ActiveTab is not { Model: not null } tab)
         {
-            _status("Abrí un gráfico en Trading primero.");
+            _status("Open a chart in Trading first.");
             return;
         }
 
@@ -277,7 +277,7 @@ internal sealed partial class StrategiesView
         _dataSource.SelectedItem = _dataSource.Items.OfType<ComboBoxItem>().FirstOrDefault(i => i.Tag is SymbolData sd && want != null && sd.FeedId == want.FeedId && sd.Symbol == want.Symbol)
                                    ?? _dataSource.Items.OfType<ComboBoxItem>().FirstOrDefault(i => i.Tag is SymbolData sd && keep != null && sd.FeedId == keep.FeedId && sd.Symbol == keep.Symbol)
                                    ?? _dataSource.Items.OfType<ComboBoxItem>().FirstOrDefault();
-        if (index.Count == 0) _dataInfo.Text = "No hay datos guardados todavía. Abrí gráficos (se graban solos) o descargá días en la sección Datos.";
+        if (index.Count == 0) _dataInfo.Text = "No saved history yet. Open a chart to record data or download history from Data.";
     }
 
     /// <summary>De dónde son los datos: el nombre de la conexión o, con Databento, cuál de las tres historias.</summary>
@@ -344,14 +344,14 @@ internal sealed partial class StrategiesView
         var src = (_dataSource.SelectedItem as ComboBoxItem)?.Tag as SymbolData;
         if (validate && src == null)
         {
-            _runStatus.Text = "No hay datos para probar. Abrí un gráfico o descargá días en Datos.";
+            _runStatus.Text = "No data available for backtesting. Open a chart or download history.";
             return null;
         }
 
         string period = (_period.Text ?? "M5").Trim();
         if (validate && !ChartPeriod.TryParse(period, out _))
         {
-            _runStatus.Text = "Período inválido (ejemplos: M5, H1, D1 o «diario», Tick500, Volume1000, Range20).";
+            _runStatus.Text = "Invalid period (examples: M5, H1, D1, Tick500, Volume1000, Range20).";
             return null;
         }
 
@@ -359,7 +359,7 @@ internal sealed partial class StrategiesView
         var to = (_to.SelectedDate ?? DateTime.UtcNow.Date).Date.AddDays(1);
         if (validate && to <= from)
         {
-            _runStatus.Text = "La fecha final tiene que ser posterior a la inicial.";
+            _runStatus.Text = "End date must be later than start date.";
             return null;
         }
 
@@ -417,7 +417,7 @@ internal sealed partial class StrategiesView
         var data = await Task.Run(() => TickData.Load(AppPaths.Ticks, inst, s.FromUtc, s.ToUtc, progress, ct), ct);
         if (data.Count == 0)
         {
-            _runStatus.Text = "No hay operaciones guardadas en ese rango. Descargá esos días en la sección Datos.";
+            _runStatus.Text = "No saved trades in this range. Download the missing days in Data.";
             return null;
         }
 
@@ -441,7 +441,7 @@ internal sealed partial class StrategiesView
             {
                 commonHeader = true;
                 _paramsPanel.Children.Add(Ui.Divider());
-                _paramsPanel.Children.Add(Ui.H3("Gestión de la posición"));
+                _paramsPanel.Children.Add(Ui.H3("Position management"));
             }
 
             _paramsPanel.Children.Add(ParameterEditor(p));
@@ -555,8 +555,8 @@ internal sealed partial class StrategiesView
             if (res.Ok) StrategyStore.Save(run, _compiledSource.Length > 0 ? _compiledSource : File.ReadAllText(file.Path));
             SetRunning(false, res.Ok
                 ? $"{res.Metrics.TotalTrades} operaciones · {res.Ticks:N0} ticks · {res.Bars:N0} velas en {res.Seconds:0.0} s · guardado en el historial"
-                : "La estrategia falló: " + res.Error);
-            _status(res.Ok ? $"Backtest de {file.DisplayName}: {Money(res.Metrics.NetProfit)}" : "Error en el backtest: " + res.Error);
+                : "Strategy failed: " + res.Error);
+            _status(res.Ok ? $"Backtest de {file.DisplayName}: {Money(res.Metrics.NetProfit)}" : "Backtest error: " + res.Error);
         }
         catch (OperationCanceledException)
         {
@@ -607,11 +607,11 @@ internal sealed partial class StrategiesView
         var rows = new (string, string)[]
         {
             ("Resultado neto", Money(m.NetProfit)), ("Gross profit", Money(m.GrossProfit)), ("Gross loss", Money(-m.GrossLoss)), ("Comisiones", Money(-m.Commission)),
-            ("Profit factor", m.ProfitFactor.ToString("0.00", Es)), ("Retorno", $"{m.ReturnPercent:0.##}%"), ("Operaciones", m.TotalTrades.ToString()), ("Ganadoras / perdedoras", $"{m.Winners} / {m.Losers}"),
+            ("Profit factor", m.ProfitFactor.ToString("0.00", Es)), ("Retorno", $"{m.ReturnPercent:0.##}%"), ("Trades", m.TotalTrades.ToString()), ("Ganadoras / perdedoras", $"{m.Winners} / {m.Losers}"),
             ("% ganadoras", $"{m.WinRate:0.##}%"), ("Average per trade", Money(m.AverageTrade)), ("Average profit", Money(m.AverageWin)), ("Average loss", Money(m.AverageLoss)),
             ("Win/loss ratio", m.PayoffRatio.ToString("0.00", Es)), ("Expectativa", Money(m.Expectancy)), ("Largest profit", Money(m.LargestWin)), ("Largest loss", Money(m.LargestLoss)),
             ("Longest winning streak", m.MaxConsecutiveWins.ToString()), ("Longest losing streak", m.MaxConsecutiveLosses.ToString()), ("Maximum drawdown", $"{Money(-m.MaxDrawdown)} ({m.MaxDrawdownPercent:0.##}%)"), ("Recovery factor", m.RecoveryFactor.ToString("0.00", Es)),
-            ("Sharpe (anual)", m.SharpeRatio.ToString("0.00", Es)), ("Sortino (anual)", m.SortinoRatio.ToString("0.00", Es)), ("Velas promedio en operación", m.AverageBarsInTrade.ToString("0.#", Es)), ("Tiempo en el mercado", $"{m.ExposurePercent:0.#}%"),
+            ("Sharpe (anual)", m.SharpeRatio.ToString("0.00", Es)), ("Sortino (anual)", m.SortinoRatio.ToString("0.00", Es)), ("Average bars in a trade", m.AverageBarsInTrade.ToString("0.#", Es)), ("Time in market", $"{m.ExposurePercent:0.#}%"),
             ("Resultado largos", Money(m.LongNetProfit)), ("Resultado cortos", Money(m.ShortNetProfit)), ("Ticks simulados", r.Ticks.ToString("N0", Es)), ("Velas", r.Bars.ToString("N0", Es)),
         };
         int half = (rows.Length + 1) / 2;
@@ -635,17 +635,17 @@ internal sealed partial class StrategiesView
     {
         if (_lastResult == null || _lastResult.Trades.Count < 2)
         {
-            _status("Hacen falta al menos 2 operaciones para Monte Carlo.");
+            _status("Monte Carlo requires at least two trades.");
             return;
         }
 
         var r = _lastResult;
         var mc = Optimizer.MonteCarlo(r.Trades, r.Settings.InitialCapital, 1000);
         _mcKpis.Children.Clear();
-        _mcKpis.Children.Add(Kpi("DD típico (50%)", Money(-mc.DrawdownP50), "la mitad de los caminos", null));
-        _mcKpis.Children.Add(Kpi("DD probable (95%)", Money(-mc.DrawdownP95), "1 de cada 20 caminos es peor", Ui.Warn));
+        _mcKpis.Children.Add(Kpi("Typical drawdown (50%)", Money(-mc.DrawdownP50), "half of simulated paths", null));
+        _mcKpis.Children.Add(Kpi("DD probable (95%)", Money(-mc.DrawdownP95), "one in 20 paths is worse", Ui.Warn));
         _mcKpis.Children.Add(Kpi("DD extremo (99%)", Money(-mc.DrawdownP99), $"peor visto {Money(-mc.WorstDrawdown)}", Ui.Down));
-        _mcKpis.Children.Add(Kpi("Riesgo de ruina", $"{mc.RuinProbabilityPercent:0.#}%", "caminos con DD ≥ 50% del capital", mc.RuinProbabilityPercent > 5 ? Ui.Down : Ui.Up));
+        _mcKpis.Children.Add(Kpi("Risk of ruin", $"{mc.RuinProbabilityPercent:0.#}%", "paths with DD ≥ 50% of capital", mc.RuinProbabilityPercent > 5 ? Ui.Down : Ui.Up));
         _mcChart.SetData(Array.Empty<EquityPoint>(), r.Settings.InitialCapital, mc.SampleCurves.Select(c => (IReadOnlyList<decimal>)c).ToList());
     }
 }
