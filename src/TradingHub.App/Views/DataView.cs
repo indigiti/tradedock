@@ -57,7 +57,7 @@ internal sealed class DataView : UserControl, IPage
             _picker.SetCurrent(profileId, inst);
             UpdateDownloadHint();
         };
-        _download = Ui.Button("Descargar", MaterialIconKind.CloudDownloadOutline, () => _ = DownloadAsync(), "primary");
+        _download = Ui.Button("Download", MaterialIconKind.CloudDownloadOutline, () => _ = DownloadAsync(), "primary");
         _cancel = Ui.Button("Cancel", MaterialIconKind.Close, () => _cts?.Cancel());
         _cancel.IsVisible = false;
         var today = DateTime.UtcNow.Date;
@@ -88,8 +88,8 @@ internal sealed class DataView : UserControl, IPage
 
     private Control Build()
     {
-        var openFolder = Ui.Button("Abrir carpeta", MaterialIconKind.FolderOpenOutline, () => Shell.OpenFolder(AppPaths.Ticks));
-        var refresh = Ui.IconButton(MaterialIconKind.Refresh, "Actualizar", Refresh);
+        var openFolder = Ui.Button("Open folder", MaterialIconKind.FolderOpenOutline, () => Shell.OpenFolder(AppPaths.Ticks));
+        var refresh = Ui.IconButton(MaterialIconKind.Refresh, "Refresh", Refresh);
         var header = new DockPanel { Margin = new Thickness(0, 0, 0, 18) };
         var actions = Ui.H(8, _totals, refresh, openFolder);
         DockPanel.SetDock(actions, Dock.Right);
@@ -100,7 +100,7 @@ internal sealed class DataView : UserControl, IPage
 
         // ---- instrumentos guardados
         var symCard = new DockPanel();
-        var symHeader = Ui.H3("Guardado");
+        var symHeader = Ui.H3("Saved");
         symHeader.Margin = new Thickness(4, 0, 0, 10);
         DockPanel.SetDock(symHeader, Dock.Top);
         symCard.Children.Add(symHeader);
@@ -131,7 +131,7 @@ internal sealed class DataView : UserControl, IPage
 
     private Control BuildDaysPanel()
     {
-        var replay = Ui.Button("Reproducir", MaterialIconKind.PlayCircleOutline, () => _ = ReplaySelectedAsync());
+        var replay = Ui.Button("Replay", MaterialIconKind.PlayCircleOutline, () => _ = ReplaySelectedAsync());
         ToolTip.SetTip(replay, "Open selected day as replay in Trading (simulated account only)");
         var delete = Ui.Button("Delete", MaterialIconKind.DeleteOutline, () => _ = DeleteSelectedAsync(), "ghost");
         var actions = Ui.H(8, delete, replay);
@@ -154,7 +154,7 @@ internal sealed class DataView : UserControl, IPage
         // cuánto bajar: atajos o cualquier rango con Desde / Hasta
         var presets = new WrapPanel { ItemSpacing = 6, LineSpacing = 6 };
         var chips = new List<Avalonia.Controls.Primitives.ToggleButton>();
-        foreach (var (days, label) in new[] { (1, "Ayer"), (7, "7 days"), (30, "30 days"), (90, "90 days"), (182, "6 meses"), (365, "1 year"), (730, "2 years") })
+        foreach (var (days, label) in new[] { (1, "Yesterday"), (7, "7 days"), (30, "30 days"), (90, "90 days"), (182, "6 months"), (365, "1 year"), (730, "2 years") })
         {
             var b = new Avalonia.Controls.Primitives.ToggleButton { Content = label, Padding = new Thickness(10, 3), MinHeight = 26, FontSize = 12, IsChecked = days == 7 };
             b.Click += (_, _) =>
@@ -187,20 +187,20 @@ internal sealed class DataView : UserControl, IPage
         _cancel.IsEnabled = false;
         return Ui.V(14,
             Ui.H2("Download history"),
-            new TextBlock { Text = "Días completos: de los archivos públicos (Binance, Bybit) o por la API de tus conexiones (Rithmic, Tradovate, cTrader, OANDA, Alpaca). En futuros, con el contrato que operaba cada día.", Classes = { "muted" }, TextWrapping = TextWrapping.Wrap },
-            Ui.Field("Instrumento", _picker),
+            new TextBlock { Text = "Complete trading days from public archives (Binance, Bybit) or your connection's API (Rithmic, Tradovate, cTrader, OANDA, Alpaca). Futures history uses the contract traded on each day.", Classes = { "muted" }, TextWrapping = TextWrapping.Wrap },
+            Ui.Field("Instrument", _picker),
             Ui.Field("How much (UTC days)", presets),
-            Ui.Row(10, Ui.Field("Desde", _from), Ui.Field("Hasta", _to)),
+            Ui.Row(10, Ui.Field("From", _from), Ui.Field("To", _to)),
             buttons,
             _progress,
             _dlStatus,
             Ui.Divider(),
-            Note(MaterialIconKind.RecordCircleOutline, "Todo lo que mirás en vivo se graba solo, también Rithmic. Los días ya bajados no se vuelven a bajar: si cancelás, la próxima vez sigue donde quedó."));
+            Note(MaterialIconKind.RecordCircleOutline, "Everything viewed live is recorded automatically, including Rithmic. Previously downloaded days are skipped, so cancelled downloads can resume."));
     }
 
     // ===================================================================== importar
 
-    private readonly TextBox _importSymbol = new() { Watermark = "Se deduce del nombre del archivo (US100, US500…)" };
+    private readonly TextBox _importSymbol = new() { Watermark = "Detected from filename (US100, US500…)" };
     private readonly ComboBox _importZone = new() { HorizontalAlignment = HorizontalAlignment.Stretch };
     private readonly ProgressBar _importProgress = new() { Minimum = 0, Maximum = 1, Height = 6, IsVisible = false };
     private readonly TextBlock _importStatus = new() { Classes = { "muted", "small" }, TextWrapping = TextWrapping.Wrap };
@@ -209,30 +209,30 @@ internal sealed class DataView : UserControl, IPage
     private static readonly (string Label, double Hours)[] Zones =
     {
         ("UTC (Dukascopy, TradingView)", 0),
-        ("Nueva York fija, −5 (HistData)", -5),
-        ("UTC+2 (MetaTrader en invierno)", 2),
-        ("UTC+3 (MetaTrader en verano)", 3),
+        ("Fixed New York time, UTC−5 (HistData)", -5),
+        ("UTC+2 (MetaTrader winter)", 2),
+        ("UTC+3 (MetaTrader summer)", 3),
     };
 
     private Control BuildImportPanel()
     {
         foreach (var (label, _) in Zones) _importZone.Items.Add(new ComboBoxItem { Content = label });
         _importZone.SelectedIndex = 0;
-        _importButton = Ui.Button("Importar archivos…", MaterialIconKind.FileImportOutline, () => _ = ImportAsync(), "primary");
+        _importButton = Ui.Button("Import files…", MaterialIconKind.FileImportOutline, () => _ = ImportAsync(), "primary");
         var duka = Ui.Button("Dukascopy", MaterialIconKind.OpenInNew, () => Shell.Open("https://www.dukascopy.com/swiss/english/marketwatch/historical/"));
-        ToolTip.SetTip(duka, "Historia gratis (con cuenta gratis): US100 = USA Tech, US500, US30, DAX, oro, forex… Elegí ticks o velas de 1 minuto y exportá en CSV");
+        ToolTip.SetTip(duka, "Free history (with a free account): US100, US500, US30, DAX, gold and forex. Export ticks or 1-minute bars as CSV.");
         var histdata = Ui.Button("HistData", MaterialIconKind.OpenInNew, () => Shell.Open("https://www.histdata.com/download-free-forex-data/"));
-        ToolTip.SetTip(histdata, "Forex e índices (NSXUSD = Nasdaq 100, SPXUSD = S&P 500) en velas de 1 minuto o ticks, gratis");
+        ToolTip.SetTip(histdata, "Free forex and indices (NSXUSD = Nasdaq 100, SPXUSD = S&P 500) as 1-minute bars or ticks");
         return Ui.V(14,
-            Ui.H2("Importar archivos"),
-            new TextBlock { Text = "Para CFDs (US100, US500, DAX), forex, oro… Bajá el CSV gratis de Dukascopy o HistData, o exportalo de MetaTrader o TradingView, y Trading Hub lo convierte en historia para gráficos, replay y backtests. El formato se reconoce solo.", Classes = { "muted" }, TextWrapping = TextWrapping.Wrap },
+            Ui.H2("Import files"),
+            new TextBlock { Text = "For CFDs, forex, and gold, obtain historical CSV data from Dukascopy or HistData, or export from MetaTrader or TradingView. Trading Hub imports it for charts, replay, and backtesting, detecting the supported format automatically.", Classes = { "muted" }, TextWrapping = TextWrapping.Wrap },
             Ui.H(8, duka, histdata),
             Ui.Field("Instrument name", _importSymbol),
             Ui.Field("File time zone", _importZone),
             _importButton,
             _importProgress,
             _importStatus,
-            Note(MaterialIconKind.InformationOutline, "Los CFDs no tienen volumen real: cada cotización cuenta como una operación (volumen de ticks) y el lado sale de si el precio subió o bajó. Sirve para precio, velas y backtests de precio; el footprint y el delta son aproximados."));
+            Note(MaterialIconKind.InformationOutline, "CFDs have no centralized traded volume here: each quote counts as one tick, with aggressor direction inferred from price changes. Price bars and price-based backtests are usable, but footprint and delta are approximate."));
     }
 
     // ===================================================================== Databento (futuros de CME, historia larga)
@@ -260,8 +260,8 @@ internal sealed class DataView : UserControl, IPage
         var today = DateTime.UtcNow.Date;
         _dbFrom.SelectedDate = today.AddMonths(-3);
         _dbTo.SelectedDate = today.AddDays(-1);
-        _dbCost = Ui.Button("Calcular costo", MaterialIconKind.Calculator, () => _ = DatabentoQuoteAsync());
-        _dbDownload = Ui.Button("Descargar", MaterialIconKind.CloudDownloadOutline, () => _ = DatabentoDownloadAsync(), "primary");
+        _dbCost = Ui.Button("Estimate cost", MaterialIconKind.Calculator, () => _ = DatabentoQuoteAsync());
+        _dbDownload = Ui.Button("Download", MaterialIconKind.CloudDownloadOutline, () => _ = DatabentoDownloadAsync(), "primary");
         _dbCancel = Ui.Button("Cancel", MaterialIconKind.Close, () => _dbCts?.Cancel());
         _dbDownload.IsEnabled = false;
         _dbCancel.IsVisible = false;
@@ -276,20 +276,20 @@ internal sealed class DataView : UserControl, IPage
         _dbFrom.SelectedDateChanged += (_, _) => Reset();
         _dbTo.SelectedDateChanged += (_, _) => Reset();
         _dbAlsoRithmic.IsCheckedChanged += (_, _) => Reset();
-        ToolTip.SetTip(_dbAlsoRithmic, "Sin tildar, Databento solo completa lo que le falta a Rithmic (más barato). Tildado, baja todo el rango para tener la historia de Databento entera.");
+        ToolTip.SetTip(_dbAlsoRithmic, "Unchecked: Databento only fills missing Rithmic days (less expensive). Checked: download the entire date range from Databento.");
         var configure = Ui.Button("Connections", MaterialIconKind.LanConnect, () => _main.Navigate("connections"), "ghost");
         Reset();
         return Ui.V(14,
             Ui.H2("CME futures with Databento"),
-            new TextBlock { Text = "Años de historia tick a tick (desde 2010) con el lado agresor real de cada operación: lo que Rithmic no guarda. Es pago por uso (las cuentas nuevas traen créditos gratis): Trading Hub calcula el costo antes y solo baja si confirmás.", Classes = { "muted" }, TextWrapping = TextWrapping.Wrap },
+            new TextBlock { Text = "Years of trade-by-trade CME history (from 2010), including the true aggressor side. Databento is billed by usage; Trading Hub estimates the cost and only downloads after your confirmation.", Classes = { "muted" }, TextWrapping = TextWrapping.Wrap },
             _dbHave,
-            Ui.Field("Contrato continuo", _dbRoot),
-            Ui.Row(10, Ui.Field("Desde", _dbFrom), Ui.Field("Hasta", _dbTo)),
+            Ui.Field("Continuous contract", _dbRoot),
+            Ui.Row(10, Ui.Field("From", _dbFrom), Ui.Field("To", _dbTo)),
             _dbAlsoRithmic,
             new WrapPanel { ItemSpacing = 8, LineSpacing = 8, Children = { _dbCost, _dbDownload, _dbCancel, configure } },
             _dbProgress,
             _dbStatus,
-            Note(MaterialIconKind.InformationOutline, "Se guarda aparte, como «Databento» en la lista de la izquierda. En los backtests elegís solo Databento, solo Rithmic o las dos combinadas (Rithmic primero y Databento completa lo que le falta). Los días que ya tenés completos no se vuelven a bajar ni se cobran."));
+            Note(MaterialIconKind.InformationOutline, "History is stored separately as Databento. Backtests can use Databento, Rithmic, or both; combined history prioritizes Rithmic and uses Databento for gaps. Previously completed days are not downloaded or charged again."));
     }
 
     private string DbRoot => (_dbRoot.SelectedItem as ComboBoxItem)?.Tag as string ?? "NQ";
