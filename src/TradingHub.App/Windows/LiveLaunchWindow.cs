@@ -21,9 +21,9 @@ internal sealed class LiveLaunchWindow : Window
     private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
     private readonly AppServices _svc;
     private readonly Action<string> _status;
-    private readonly ComboBox _strategy = new() { HorizontalAlignment = HorizontalAlignment.Stretch, PlaceholderText = "Elegí una estrategia" };
+    private readonly ComboBox _strategy = new() { HorizontalAlignment = HorizontalAlignment.Stretch, PlaceholderText = "Select strategy" };
     private readonly InstrumentPicker _picker;
-    private readonly ComboBox _account = new() { HorizontalAlignment = HorizontalAlignment.Stretch, PlaceholderText = "Elegí primero el instrumento" };
+    private readonly ComboBox _account = new() { HorizontalAlignment = HorizontalAlignment.Stretch, PlaceholderText = "Select instrument first" };
     private readonly ComboBox _period = new() { HorizontalAlignment = HorizontalAlignment.Stretch };
     private readonly TextBlock _session = new() { Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap };
     private readonly ParameterEditor _params = new();
@@ -46,7 +46,7 @@ internal sealed class LiveLaunchWindow : Window
     {
         _svc = svc;
         _status = status;
-        Title = "Nueva estrategia en vivo";
+        Title = "New live strategy";
         Width = 600;
         Height = 840;
         MinWidth = 500;
@@ -79,8 +79,8 @@ internal sealed class LiveLaunchWindow : Window
         foreach (var d in LiveStore.LoadPortfolios().Where(d => !d.Auto)) _portfolio.Items.Add(new ComboBoxItem { Content = d.Name, Tag = d.Id });
         _portfolio.SelectedItem = _portfolio.Items.OfType<ComboBoxItem>().FirstOrDefault(i => (i.Tag as string) == portfolioId) ?? _portfolio.Items[0];
 
-        _start = Ui.Button("Iniciar en vivo", MaterialIconKind.Play, () => _ = StartAsync(), "primary");
-        var cancel = Ui.Button("Cancelar", MaterialIconKind.Close, Close);
+        _start = Ui.Button("Start live", MaterialIconKind.Play, () => _ = StartAsync(), "primary");
+        var cancel = Ui.Button("Cancel", MaterialIconKind.Close, Close);
 
         var riskGrid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,12,*,12,*") };
         void Put(Control c, int col)
@@ -89,21 +89,21 @@ internal sealed class LiveLaunchWindow : Window
             riskGrid.Children.Add(c);
         }
 
-        Put(Ui.Field("Tamaño (×)", _size, "multiplica sus órdenes"), 0);
-        Put(Ui.Field("Pérdida máx. del día", _dailyLoss, "0 = sin límite"), 2);
-        Put(Ui.Field("Drawdown máximo", _maxDd, "0 = sin límite"), 4);
+        Put(Ui.Field("Size (×)", _size, "multiplica sus órdenes"), 0);
+        Put(Ui.Field("Max daily loss", _dailyLoss, "0 = sin límite"), 2);
+        Put(Ui.Field("Maximum drawdown", _maxDd, "0 = sin límite"), 4);
 
         var body = new StackPanel { Spacing = 18, Margin = new Thickness(22, 18, 22, 18) };
-        body.Children.Add(Ui.V(4, Ui.H2("Nueva estrategia en vivo"),
+        body.Children.Add(Ui.V(4, Ui.H2("New live strategy"),
             Note("Recibe el mercado en tiempo real y opera en la cuenta elegida. Antes de empezar arma sus indicadores con la historia (sin operar). Probala primero en la cuenta simulada.")));
-        body.Children.Add(Section("Qué y dónde", Ui.Field("Estrategia", _strategy), Ui.Field("Instrumento", _picker), Ui.Field("Cuenta", _account), _warning,
+        body.Children.Add(Section("What and where", Ui.Field("Strategy", _strategy), Ui.Field("Instrumento", _picker), Ui.Field("Account", _account), _warning,
             Ui.Field("Velas", _period), _session));
-        body.Children.Add(Section("Parámetros", _params, Note("Vienen de lo último que configuraste en su Backtest.")));
-        body.Children.Add(Section("Condición de mercado", _conditions,
+        body.Children.Add(Section("Parameters", _params, Note("Vienen de lo último que configuraste en su Backtest.")));
+        body.Children.Add(Section("Market condition", _conditions,
             Note("Solo abre operaciones cuando el mercado está en lo que elijas (tendencia de las últimas 24 horas y volatilidad del último mes, con velas ya cerradas). Después lo cambiás desde En vivo sin reiniciarla.")));
         body.Children.Add(Section("Riesgo", riskGrid, _closeOnLimit,
             Note("Pérdida del día: al tocarla no abre más hasta la próxima sesión. Drawdown: la detiene. Las salidas siempre cierran justo lo que abrió, aunque cambies el tamaño en el medio.")));
-        body.Children.Add(Section("Portafolio", _portfolio));
+        body.Children.Add(Section("Portfolio", _portfolio));
 
         var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(22, 10, 22, 16) };
         actions.Children.Add(cancel);
@@ -206,7 +206,7 @@ internal sealed class LiveLaunchWindow : Window
     {
         if (_strategy.SelectedItem is not ComboBoxItem { Tag: StrategyFile file })
         {
-            _status("Elegí una estrategia.");
+            _status("Select a strategy.");
             return;
         }
 
@@ -218,13 +218,13 @@ internal sealed class LiveLaunchWindow : Window
 
         if (_account.SelectedItem is not ComboBoxItem { Tag: AccountOption acc })
         {
-            _status("Elegí una cuenta.");
+            _status("Select an account.");
             return;
         }
 
         if (!ChartPeriod.TryParse(_period.SelectedItem as string ?? "M5", out var period))
         {
-            _status("Período inválido.");
+            _status("Invalid period.");
             return;
         }
 
@@ -234,7 +234,7 @@ internal sealed class LiveLaunchWindow : Window
             return;
         }
 
-        if (acc.IsReal && !await ConfirmDialog.ShowAsync(this, "Ejecutar en cuenta REAL",
+        if (acc.IsReal && !await ConfirmDialog.ShowAsync(this, "Execute on REAL account",
                 $"«{file.DisplayName}» va a operar {_instrument.Symbol} en {acc.Name} con órdenes reales y sin confirmación individual. La detenés desde En vivo.",
                 "Ejecutar con dinero real", danger: true))
             return;

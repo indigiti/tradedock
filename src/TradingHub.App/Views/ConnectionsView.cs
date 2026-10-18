@@ -62,7 +62,7 @@ internal sealed class ConnectionsView : UserControl, IPage
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("320,*") };
 
         // ---- lista
-        var add = new Button { Content = Ui.H(6, Ui.Icon(MaterialIconKind.Plus, 16), new TextBlock { Text = "Nueva conexión" }), HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Center };
+        var add = new Button { Content = Ui.H(6, Ui.Icon(MaterialIconKind.Plus, 16), new TextBlock { Text = "New connection" }), HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Center };
         var menu = new MenuFlyout();
         foreach (var kind in Enum.GetValues<ConnectionKind>())
         {
@@ -83,7 +83,7 @@ internal sealed class ConnectionsView : UserControl, IPage
         }
 
         add.Flyout = menu;
-        var header = Ui.V(4, Ui.H1("Conexiones"), Ui.Muted("Datos de mercado y cuentas para operar"));
+        var header = Ui.V(4, Ui.H1("Connections"), Ui.Muted("Datos de mercado y cuentas para operar"));
         header.Margin = new Thickness(0, 0, 0, 16);
         var left = new DockPanel { Margin = new Thickness(20, 20, 12, 20) };
         DockPanel.SetDock(header, Dock.Top);
@@ -194,7 +194,7 @@ internal sealed class ConnectionsView : UserControl, IPage
         var name = new TextBox { Text = p.Name, FontSize = 18, FontWeight = FontWeight.SemiBold, MinWidth = 170, MaxWidth = 300 };
         var enabled = new ToggleSwitch { IsChecked = p.Enabled, OnContent = "Activada", OffContent = "Desactivada" };
         var history = new ComboBox { MinWidth = 160 };
-        foreach (var (h, label) in new[] { (0.5, "30 minutos"), (1.0, "1 hora"), (1.5, "1,5 horas"), (3.0, "3 horas"), (6.0, "6 horas"), (12.0, "12 horas"), (24.0, "1 día"), (72.0, "3 días"), (168.0, "7 días") })
+        foreach (var (h, label) in new[] { (0.5, "30 minutos"), (1.0, "1 hora"), (1.5, "1,5 horas"), (3.0, "3 horas"), (6.0, "6 horas"), (12.0, "12 horas"), (24.0, "1 day"), (72.0, "3 days"), (168.0, "7 days") })
             history.Items.Add(new ComboBoxItem { Content = label, Tag = h });
         history.SelectedItem = history.Items.OfType<ComboBoxItem>().OrderBy(i => Math.Abs((double)i.Tag! - p.HistoryHours)).First();
 
@@ -262,8 +262,8 @@ internal sealed class ConnectionsView : UserControl, IPage
 
         // ---- encabezado y acciones
         var test = Ui.Button("Probar conexión", MaterialIconKind.LanConnect, () => { });
-        var save = Ui.Button("Guardar", MaterialIconKind.ContentSaveOutline, () => { }, "primary");
-        var delete = Ui.Button("Eliminar", MaterialIconKind.DeleteOutline, () => { }, "ghost");
+        var save = Ui.Button("Save", MaterialIconKind.ContentSaveOutline, () => { }, "primary");
+        var delete = Ui.Button("Remove", MaterialIconKind.DeleteOutline, () => { }, "ghost");
         delete.IsVisible = _svc.Connections.Profiles.Count(x => x.Kind == p.Kind) > 1 || p.Kind is ConnectionKind.InteractiveBrokers or ConnectionKind.AmpFutures
             or ConnectionKind.Tradovate or ConnectionKind.CTrader or ConnectionKind.Oanda or ConnectionKind.Alpaca or ConnectionKind.Databento;
 
@@ -301,7 +301,7 @@ internal sealed class ConnectionsView : UserControl, IPage
         delete.Click += async (_, _) =>
         {
             if (TopLevel.GetTopLevel(this) is not Window w) return;
-            if (!await ConfirmDialog.ShowAsync(w, "Eliminar conexión", $"Se borra \"{p.Name}\" y sus secretos del Llavero. Los datos grabados no se tocan.", "Eliminar", danger: true)) return;
+            if (!await ConfirmDialog.ShowAsync(w, "Eliminar conexión", $"Se borra \"{p.Name}\" y sus secretos del Llavero. Los datos grabados no se tocan.", "Remove", danger: true)) return;
             _svc.Connections.ClearSecrets(p);
             _svc.Connections.Invalidate(p);
             _svc.Connections.Profiles.Remove(p);
@@ -609,7 +609,7 @@ internal sealed class ConnectionsView : UserControl, IPage
             customPanel,
             Ui.H3("Datos de mercado"),
             TwoColumns(Ui.V(4, aggregated, aggNote), Ui.Field("Tiempo de espera de conexión (ms)", timeout)),
-            Ui.H3("Operar"),
+            Ui.H3("Trade"),
             Note(MaterialIconKind.ShieldCheckOutline, "Tus cuentas de Rithmic aparecen en el Chart Trader («Cuenta») cuando la conexión está activa. Las de práctica (Paper Trading) operan directo; las reales necesitan esta autorización y piden confirmación."),
             allowReal,
             TwoColumns(confirm, Ui.Field("Cantidad máxima por orden (0 = sin límite)", maxQty)),
@@ -793,7 +793,7 @@ internal sealed class ConnectionsView : UserControl, IPage
             Ui.H2("OANDA (API v20)"),
             Note(MaterialIconKind.InformationOutline, "Gratis con una cuenta de práctica: CFDs de índices (NAS100_USD = Nasdaq 100, SPX500_USD = S&P 500, US30_USD, DE30_EUR…), oro, petróleo y forex, con años de historia en velas de 5 segundos."),
             practice,
-            TwoColumns(Ui.Field("Token", token), Ui.Field("Cuenta", account)),
+            TwoColumns(Ui.Field("Token", token), Ui.Field("Account", account)),
             Ui.H(16, Link("Crear cuenta de práctica", "https://www.oanda.com/demo-account/"), Link("Generar el token (Manage API Access)", "https://www.oanda.com/demo-account/tpa/personal_token")),
             Note(MaterialIconKind.ShieldKeyOutline, "El token se guarda en el Llavero. Trading Hub lo usa solo para datos (no manda órdenes a OANDA)."));
     }
