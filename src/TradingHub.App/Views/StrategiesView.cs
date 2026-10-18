@@ -50,12 +50,12 @@ internal sealed partial class StrategiesView : UserControl, IPage
         _catalog = svc.Strategies;
         _tabs = new Ui.Segmented<string>(new[]
         {
-            ("code", "Code", (string?)"Editar la estrategia en C#"),
-            ("backtest", "Backtest", (string?)"Probar con datos históricos, tick a tick"),
-            ("optimize", "Optimization", (string?)"Probar combinaciones de parámetros"),
+            ("code", "Code", (string?)"Edit strategy in C#"),
+            ("backtest", "Backtest", (string?)"Test against recorded tick-level history"),
+            ("optimize", "Optimization", (string?)"Test combinations of parameters"),
             ("wfo", "Walk-forward", (string?)"Optimizar y validar fuera de muestra, ventana por ventana"),
-            ("history", "History", (string?)"Corridas guardadas de esta estrategia"),
-            ("portfolio", "Portfolio", (string?)"Portafolio de pruebas: combinar backtests de varias estrategias y medir su correlación"),
+            ("history", "History", (string?)"Saved runs for this strategy"),
+            ("portfolio", "Portfolio", (string?)"Test portfolio: combine strategy backtests and measure correlation"),
             ("reports", "Reportes", (string?)"Informes profesionales de las estrategias y portafolios"),
         });
         _tabs.SelectionChanged += ShowTab;
@@ -96,7 +96,7 @@ internal sealed partial class StrategiesView : UserControl, IPage
         var picker = new Button { Flyout = _strategyMenu, Classes = { "ghost" }, Padding = new Thickness(10, 6) };
         _strategyPicker = picker;
         picker.Content = Ui.H(10, Ui.Icon(MaterialIconKind.RobotOutline, 20, Ui.Accent), _strategyName, Ui.Icon(MaterialIconKind.ChevronDown, 16, Ui.Text2));
-        ToolTip.SetTip(picker, "Elegir o crear estrategia");
+        ToolTip.SetTip(picker, "Select or create strategy");
         var state = new Border { Child = Ui.H(7, _compileDot, _compileText), Classes = { "pill" } };
         var left = Ui.H(12, picker, state);
         var header = new DockPanel { Margin = new Thickness(20, 12, 20, 12) };
@@ -164,7 +164,7 @@ internal sealed partial class StrategiesView : UserControl, IPage
             if (favorites.Count == 0)
                 list.Children.Add(new TextBlock
                 {
-                    Text = q.Length > 0 ? "Ninguna favorita con ese nombre." : "Tocá la estrella de una estrategia para tenerla acá arriba.",
+                    Text = q.Length > 0 ? "Ninguna favorita con ese nombre." : "Star a strategy to pin it here.",
                     Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(4, 2, 4, 8),
                 });
             foreach (var f in favorites) list.Children.Add(StrategyRow(f, Fill));
@@ -172,7 +172,7 @@ internal sealed partial class StrategiesView : UserControl, IPage
             list.Children.Add(new Border { Height = 1, Background = Ui.Line, Margin = new Thickness(0, 6) });
             list.Children.Add(Section("All strategies"));
             if (files.Count == 0)
-                list.Children.Add(new TextBlock { Text = q.Length > 0 ? "Ninguna estrategia con ese nombre." : "Todavía no hay estrategias.", Classes = { "faint", "small" }, Margin = new Thickness(4, 2) });
+                list.Children.Add(new TextBlock { Text = q.Length > 0 ? "No strategy matches this name." : "No strategies yet.", Classes = { "faint", "small" }, Margin = new Thickness(4, 2) });
             foreach (var f in files) list.Children.Add(StrategyRow(f, Fill));
         }
 
@@ -332,16 +332,16 @@ internal sealed partial class StrategiesView : UserControl, IPage
     {
         var save = Ui.Button("Save", MaterialIconKind.ContentSaveOutline, Save);
         ToolTip.SetTip(save, "⌘S");
-        var compile = Ui.Button("Compilar", MaterialIconKind.Hammer, () => _ = CompileAsync(), "primary");
+        var compile = Ui.Button("Compile", MaterialIconKind.Hammer, () => _ = CompileAsync(), "primary");
         ToolTip.SetTip(compile, "⌘B");
-        var test = Ui.Button("Compilar y probar", MaterialIconKind.PlayOutline, async () =>
+        var test = Ui.Button("Compile and test", MaterialIconKind.PlayOutline, async () =>
         {
             if (!await CompileAsync()) return;
             _tabs.Select("backtest");
             ShowTab("backtest");
             await RunBacktestAsync();
         });
-        var help = new Button { Content = Ui.H(6, Ui.Icon(MaterialIconKind.BookOpenPageVariantOutline, 16), new TextBlock { Text = "Referencia" }), Flyout = new Flyout { Content = ApiHelp() } };
+        var help = new Button { Content = Ui.H(6, Ui.Icon(MaterialIconKind.BookOpenPageVariantOutline, 16), new TextBlock { Text = "Reference" }), Flyout = new Flyout { Content = ApiHelp() } };
         var delete = Ui.IconButton(MaterialIconKind.DeleteOutline, "Delete this strategy", async () =>
         {
             if (_current == null || TopLevel.GetTopLevel(this) is not Window w) return;
@@ -497,7 +497,7 @@ internal sealed class NewStrategyDialog : Window
         list.SelectedIndex = 0;
         var cancel = new Button { Content = "Cancel", IsCancel = true };
         cancel.Click += (_, _) => Close(null);
-        var ok = new Button { Content = "Crear", IsDefault = true }.Classes("primary");
+        var ok = new Button { Content = "Create", IsDefault = true }.Classes("primary");
         ok.Click += (_, _) =>
         {
             if (list.SelectedItem is not ListBoxItem { Tag: StrategyTemplate t } || string.IsNullOrWhiteSpace(name.Text)) return;

@@ -192,9 +192,9 @@ internal sealed class ConnectionsView : UserControl, IPage
     private Control BuildDetail(ConnectionProfile p)
     {
         var name = new TextBox { Text = p.Name, FontSize = 18, FontWeight = FontWeight.SemiBold, MinWidth = 170, MaxWidth = 300 };
-        var enabled = new ToggleSwitch { IsChecked = p.Enabled, OnContent = "Activada", OffContent = "Desactivada" };
+        var enabled = new ToggleSwitch { IsChecked = p.Enabled, OnContent = "Enabled", OffContent = "Desactivada" };
         var history = new ComboBox { MinWidth = 160 };
-        foreach (var (h, label) in new[] { (0.5, "30 minutos"), (1.0, "1 hora"), (1.5, "1,5 horas"), (3.0, "3 horas"), (6.0, "6 horas"), (12.0, "12 horas"), (24.0, "1 day"), (72.0, "3 days"), (168.0, "7 days") })
+        foreach (var (h, label) in new[] { (0.5, "30 minutos"), (1.0, "1 hora"), (1.5, "1.5 hours"), (3.0, "3 hours"), (6.0, "6 hours"), (12.0, "12 hours"), (24.0, "1 day"), (72.0, "3 days"), (168.0, "7 days") })
             history.Items.Add(new ComboBoxItem { Content = label, Tag = h });
         history.SelectedItem = history.Items.OfType<ComboBoxItem>().OrderBy(i => Math.Abs((double)i.Tag! - p.HistoryHours)).First();
 
@@ -431,7 +431,7 @@ internal sealed class ConnectionsView : UserControl, IPage
     private Control RithmicSection(ConnectionProfile p, List<Action> apply)
     {
         var servers = LoadRithmicCache();
-        var search = new TextBox { Watermark = "Buscar servidor (paper, 01, Apex, Frankfurt, Sao Paulo…)" };
+        var search = new TextBox { Watermark = "Search servers (paper, 01, Apex, Frankfurt, São Paulo…)" };
         var server = new ComboBox { HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Left, MaxDropDownHeight = 420, PlaceholderText = "Choose a server" };
         var info = new TextBlock { Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap };
         var refresh = Ui.IconButton(MaterialIconKind.Refresh, "Refresh full server list", () => { }, 16);
