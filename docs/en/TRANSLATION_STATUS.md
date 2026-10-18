@@ -15,13 +15,13 @@ Deliver an understandable English trading application and English project docume
 |---|---|---|---|
 | English top-level README | Complete | `README.md`; `README.es.md` retained | Review link targets and content accuracy |
 | English documentation access | Available, condensed | 17 English guide files in `docs/en/`, including index | Full section-by-section translation parity against each original Spanish guide |
-| Source UI labels | Partial | 20 application C# files changed, 355-item glossary in `tools/english-ui-glossary.json` | Inspect all remaining static, dynamic, dialog, and indicator strings |
+| Source UI labels | Partial | 20 application C# files changed, 604-item glossary in `tools/english-ui-glossary.json` | Inspect all remaining static, dynamic, dialog, and indicator strings |
 | Trading algorithm changes | None intended | Existing changes are quoted-label substitutions | Confirm with `tools/check_english_translation.py` on every PR run |
-| .NET 10 macOS build | Passed on initial CI run | [GitHub Actions](https://github.com/indigiti/tradedock/actions/runs/39139263418) | Revalidate after subsequent changes |
+| .NET 10 macOS build | Passed on recent CI run | [GitHub Actions](https://github.com/indigiti/tradedock/actions/runs/39140739347) | Revalidate current head and continue regression checks |
 | Existing unit/regression suite | Passed on initial CI run | [GitHub Actions](https://github.com/indigiti/tradedock/actions/runs/39139263418) | Revalidate after subsequent changes |
 | English documentation links | Pending automated gate | `tools/check_english_translation.py` | All relative links resolve |
 | UI string-only diff guard | Pending automated gate | Compares translated source to `origin/main` using approved exact-literal translations | No unexplained source edits |
-| Desktop visual and UX review | Not run | No reviewed screenshots | Test navigation, clipping, hotkeys, icon labels, responsive layouts, dialogs |
+| Desktop visual and UX review | Automated headless scenes rendered | [Screenshot artifact on GitHub Actions](https://github.com/indigiti/tradedock/actions/runs/39140739347) | Human review for clipping, hotkeys, narrow windows, dialogs |
 | Live/paper broker regression | Not run | No authorized live account test | Test reconnections and error paths with safe fixtures; never expose credentials |
 | Release readiness | **Blocked** | Draft PR is intentionally unmerged | All high-risk unresolved issues closed with evidence |
 
@@ -44,7 +44,7 @@ Deliver an understandable English trading application and English project docume
 
 ## Release decision
 
-**Not ready for merge.** Initial build/tests passed; source-only and documentation validation will run in CI, but complete localization and visual review are unfinished. Keep PR #1 in draft.
+**Not ready for merge.** Recent build/tests, source-only validation, English links, and headless scenes have passed in CI. Complete localization, full manual UX review, and live-broker regressions remain unfinished. Keep PR #1 in draft.
 
 ## Reference links
 
