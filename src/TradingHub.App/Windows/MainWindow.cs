@@ -217,7 +217,7 @@ public sealed class MainWindow : Window
         reconnect.Click += (_, _) =>
         {
             _svc.Hub.ReconnectAll();
-            SetStatus("Reconectando… lo que se perdió durante el corte se rellena solo.");
+            SetStatus("Reconnecting… missing data from the interruption will be backfilled automatically.");
         };
         var toConnections = new MenuItem { Header = "Conexiones…" };
         toConnections.Click += (_, _) => Navigate("connections");
@@ -229,10 +229,10 @@ public sealed class MainWindow : Window
             connMenu.ShowAt(conn);
             e.Handled = true;
         };
-        ToolTip.SetTip(conn, "Conexión del gráfico activo (clic: reconectar o ir a Conexiones)");
+        ToolTip.SetTip(conn, "Active chart connection (click to reconnect or open Connections)");
         // el resultado de la simulada lleva a la sección Cuenta
         var pnl = new Border { Child = _pnlText, Background = Brushes.Transparent, Cursor = new Cursor(StandardCursorType.Hand), VerticalAlignment = VerticalAlignment.Center };
-        ToolTip.SetTip(pnl, "Ver la cuenta: saldo, órdenes, operaciones y estadísticas");
+        ToolTip.SetTip(pnl, "View account: balance, orders, trades, and statistics");
         pnl.PointerPressed += (_, _) => Navigate("accounts");
         // modo claro / oscuro
         var themeButton = new Button { Classes = { "icon" }, VerticalAlignment = VerticalAlignment.Center };
@@ -309,7 +309,7 @@ public sealed class MainWindow : Window
             catch (Exception ex)
             {
                 CrashLog.Write(ex);
-                page = new TextBlock { Text = "No se pudo abrir la página: " + ex.Message, Margin = new Thickness(24) };
+                page = new TextBlock { Text = "Could not open page: " + ex.Message, Margin = new Thickness(24) };
             }
 
             _pages[id] = page;
@@ -500,7 +500,7 @@ public sealed class MainWindow : Window
                 state = open > DateTime.UtcNow ? $"mercado cerrado · abre {Day(openLocal, tz)} {openLocal:HH:mm}" : "mercado cerrado";
                 tip = d.ClosedAt is { } last
                     ? $"Última operación: {Day(TimeZoneInfo.ConvertTimeFromUtc(last, tz), tz)} {TimeZoneInfo.ConvertTimeFromUtc(last, tz):HH:mm}. La conexión sigue activa."
-                    : "La conexión sigue activa; los datos vuelven solos cuando abre el mercado.";
+                    : "Connection remains active; data will resume when the market opens.";
                 _connDot.Fill = Ui.Text2;
             }
             else if (d.Status == FeedStatus.Connected && d.Feed.IsLive && d.LastDataAt.Year > 2000 && quiet.TotalSeconds > 60)
@@ -532,7 +532,7 @@ public sealed class MainWindow : Window
     {
         var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz).Date;
         if (local.Date == today) return "hoy";
-        if (local.Date == today.AddDays(1)) return "mañana";
+        if (local.Date == today.AddDays(1)) return "tomorrow";
         return local.ToString("ddd", new System.Globalization.CultureInfo("es-AR")).TrimEnd('.');
     }
 
