@@ -346,7 +346,7 @@ public sealed partial class TradingView : UserControl
         if (chart.MaximizeButton is not { } b) return;
         bool big = chart.Page?.Maximized != null && ReferenceEquals(chart.Page.Maximized, chart);
         b.Content = Ui.Icon(big ? MaterialIconKind.ArrowCollapse : MaterialIconKind.ArrowExpand, 14);
-        ToolTip.SetTip(b, big ? "Volver a mostrar todos los gráficos" : "Agrandar este gráfico (ocupa toda la pestaña)");
+        ToolTip.SetTip(b, big ? "Show all charts again" : "Agrandar este gráfico (ocupa toda la pestaña)");
     }
 
     /// <summary>Diseño justo para la cantidad de gráficos que quedan (al cerrar o sacar uno no quedan lugares vacíos).</summary>
@@ -1133,7 +1133,7 @@ public sealed partial class TradingView : UserControl
         if (tab.Model == null || TopLevel.GetTopLevel(tab.Window ?? (Control)this) is not Window owner) return;
         string suggested = $"{tab.Symbol} {(tab.Model.Settings.Style == ChartStyle.Footprint ? "footprint" : tab.Model.Settings.Style.ToString().ToLowerInvariant())}";
         var name = await PromptDialog.ShowAsync(owner, "Guardar plantilla de gráfico",
-            "Nombre de la plantilla. Guarda el estilo, el footprint, los colores, lo que se muestra y los indicadores (no el instrumento ni el período).", suggested, "Guardar");
+            "Nombre de la plantilla. Guarda el estilo, el footprint, los colores, lo que se muestra y los indicadores (no el instrumento ni el período).", suggested, "Save");
         if (string.IsNullOrWhiteSpace(name)) return;
         try
         {
@@ -1193,7 +1193,7 @@ public sealed partial class TradingView : UserControl
         foreach (var n in names) forNew.Items.Add(Choice(n, n));
         items.Add(forNew);
 
-        var delete = new MenuItem { Header = "Borrar una plantilla", Icon = Ui.Icon(MaterialIconKind.DeleteOutline, 16) };
+        var delete = new MenuItem { Header = "Delete template", Icon = Ui.Icon(MaterialIconKind.DeleteOutline, 16) };
         foreach (var n in names)
         {
             var mi = new MenuItem { Header = n };

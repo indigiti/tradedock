@@ -1,43 +1,39 @@
-# Documentación de Trading Hub
+# Trading Hub documentation
 
-[← Volver al README principal](../README.md)
+[← Back to the main README](../README.md)
 
-Guía completa de la plataforma, sección por sección. Si recién llegás, empezá por la instalación y los primeros pasos.
+This directory contains the full platform documentation organized by feature. **English-language guides are linked below.** The original Spanish versions remain available in this directory, and some English guides are condensed relative to the originals.
 
-## Empezar
+## Getting started
 
-- [Instalación](instalacion.md): requisitos, compilar e instalar, actualizar y desinstalar.
-- [Primeros pasos](primeros-pasos.md): un recorrido por la ventana principal y la cuenta simulada.
-- [Conexiones](conexiones.md): brokers, exchanges y proveedores de datos; cuentas reales y simuladas.
+- [Installation](en/instalacion.md): Requirements, building, installation, updates, and uninstalling.
+- [First steps](en/primeros-pasos.md): Explore the main interface and simulated account.
+- [Connections](en/conexiones.md): Brokers, exchanges, market-data providers, and simulated or real accounts.
 
-## Mirar y operar
+## Charts and trading
 
-- [Gráficos](graficos.md): períodos, estilos, footprint, DOM, dibujos, plantillas, indicadores y replay.
-- [Operar](operar.md): Chart Trader, DOM, tipos de órdenes, brackets, cuentas e historial.
-- [Indicadores](indicadores.md): los incluidos, los tuyos en C# y la compatibilidad con la API de ATAS.
+- [Charts](en/graficos.md): Timeframes, footprint charts, DOM, drawings, templates, indicators, and replay.
+- [Trading](en/operar.md): Chart Trader, DOM, order types, brackets, accounts, and trading history.
+- [Indicators](en/indicadores.md): Included indicators, custom C# indicators, and ATAS API compatibility.
 
-## Datos
+## Data
 
-- [Datos](datos.md): lo que se graba solo, descargas, Databento (solo Rithmic, solo Databento o combinadas) e
-  importación de CSV.
+- [Market data](en/datos.md): Automatic recording, downloads, Databento, combining sources, and CSV imports.
 
-## Estrategias
+## Strategies
 
-- [Estrategias](estrategias.md): la API en C# con ejemplos completos.
-- [Backtesting](backtesting.md): backtest, optimización bayesiana, walk-forward inteligente, PBO, CPCV, Monte Carlo y
-  resultados según el mercado.
-- [En vivo](en-vivo.md): estrategias en tus cuentas, límites de riesgo, portafolios y el agente de riesgo.
-- [Claude](asistente-claude.md): el asistente que escribe estrategias y el laboratorio MCP.
+- [Strategies](en/estrategias.md): C# strategy API and worked examples.
+- [Backtesting](en/backtesting.md): Backtests, Bayesian optimization, walk-forward, PBO, CPCV, Monte Carlo, and market-condition analysis.
+- [Live strategies](en/en-vivo.md): Live accounts, risk limits, portfolios, and risk agents.
+- [Claude integration](en/asistente-claude.md): Strategy assistant and MCP laboratory.
 
-## Más
+## Additional guides
 
-- [Ajustes](ajustes.md): todas las opciones.
-- [Privacidad](privacidad.md): qué queda en tu computadora y qué se conecta a internet.
-- [Desarrollo](desarrollo.md): estructura del código, compilar, pruebas y escenas sin pantalla.
-- [Portar a Windows](../PORTAR_A_WINDOWS.md): el plan y el prompt para llevarla a Windows con Claude.
+- [Settings](en/ajustes.md): Application preferences.
+- [Privacy](en/privacidad.md): Local data and network connections.
+- [Development](en/desarrollo.md): Source structure, builds, tests, and headless screenshot scenes.
+- [Windows porting](en/portar-a-windows.md): Porting plan and prompt for Claude Code.
 
 ---
 
-Trading Hub es gratis y su código es público (licencia MIT con Commons Clause: se puede usar y modificar, no vender) y
-lo creó [@ralphtradesz](https://x.com/ralphtradesz). Si te sirve, podés
-[apoyar el proyecto](../README.md#apoyá-el-proyecto).
+Trading Hub was originally created by [@ralphtradesz](https://x.com/ralphtradesz). It is free to use, with source available under the [MIT + Commons Clause license](../LICENSE); commercial use is restricted. See the [main README](../README.md) for details.

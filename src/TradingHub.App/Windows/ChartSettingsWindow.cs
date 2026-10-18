@@ -53,9 +53,9 @@ internal sealed class ChartSettingsWindow : Window
             ColorRow("Fondo (arriba)", nameof(ChartTheme.BackgroundTop)),
             ColorRow("Fondo (abajo)", nameof(ChartTheme.BackgroundBottom)),
             SmallButton("Fondo liso (abajo igual que arriba)", () => Set(nameof(ChartTheme.BackgroundBottom), Get(nameof(ChartTheme.BackgroundTop)))),
-            ColorRow("Cuadrícula", nameof(ChartTheme.Grid)),
-            Toggle("Mostrar la cuadrícula", () => _model.Settings.ShowGrid, v => _model.Settings.ShowGrid = v),
-            ColorRow("Separador de paneles", nameof(ChartTheme.PanelSeparator)));
+            ColorRow("Grid", nameof(ChartTheme.Grid)),
+            Toggle("Show grid", () => _model.Settings.ShowGrid, v => _model.Settings.ShowGrid = v),
+            ColorRow("Panel separator", nameof(ChartTheme.PanelSeparator)));
         Tab("Velas",
             ColorRow("Alcista", nameof(ChartTheme.UpCandle)),
             ColorRow("Bajista", nameof(ChartTheme.DownCandle)),
@@ -63,38 +63,38 @@ internal sealed class ChartSettingsWindow : Window
             ColorRow("Borde bajista", nameof(ChartTheme.DownCandleBorder)),
             ColorRow("Mecha", nameof(ChartTheme.Wick)));
         Tab("Ejes",
-            ColorRow("Fondo de los ejes", nameof(ChartTheme.AxisBackground)),
-            ColorRow("Texto de los ejes", nameof(ChartTheme.AxisText)),
-            ColorRow("Líneas de los ejes", nameof(ChartTheme.AxisLine)),
+            ColorRow("Axis background", nameof(ChartTheme.AxisBackground)),
+            ColorRow("Axis text", nameof(ChartTheme.AxisText)),
+            ColorRow("Axis lines", nameof(ChartTheme.AxisLine)),
             ColorRow("Texto", nameof(ChartTheme.Text)),
             ColorRow("Texto secundario", nameof(ChartTheme.TextDim)),
             Toggle("Datos de la vela arriba (Ap, Máx, Mín, Cie…)", () => _model.Settings.ShowInfoPanel, v => _model.Settings.ShowInfoPanel = v));
         Tab("Precio",
-            ColorRow("Último precio (sube)", nameof(ChartTheme.LastPriceUp)),
-            ColorRow("Último precio (baja)", nameof(ChartTheme.LastPriceDown)),
-            ColorRow("Línea del último precio", nameof(ChartTheme.LastPriceLine)),
-            Toggle("Mostrar la línea del último precio", () => _model.Settings.ShowLastPriceLine, v => _model.Settings.ShowLastPriceLine = v),
+            ColorRow("Last price (up)", nameof(ChartTheme.LastPriceUp)),
+            ColorRow("Last price (down)", nameof(ChartTheme.LastPriceDown)),
+            ColorRow("Last price line", nameof(ChartTheme.LastPriceLine)),
+            Toggle("Show last price line", () => _model.Settings.ShowLastPriceLine, v => _model.Settings.ShowLastPriceLine = v),
             ColorRow("Cursor (cruz)", nameof(ChartTheme.Crosshair)),
-            ColorRow("Etiqueta del cursor", nameof(ChartTheme.CrosshairLabelBack)),
-            ColorRow("Inicio de sesión", nameof(ChartTheme.NewSession)),
-            Toggle("Marcar el inicio de cada sesión", () => _model.Settings.ShowSessionLines, v => _model.Settings.ShowSessionLines = v));
+            ColorRow("Crosshair label", nameof(ChartTheme.CrosshairLabelBack)),
+            ColorRow("Session start", nameof(ChartTheme.NewSession)),
+            Toggle("Mark each session start", () => _model.Settings.ShowSessionLines, v => _model.Settings.ShowSessionLines = v));
         Tab("Footprint",
             ColorRow("Bid (vendedores)", nameof(ChartTheme.Bid)),
             ColorRow("Ask (compradores)", nameof(ChartTheme.Ask)),
             ColorRow("Celdas", nameof(ChartTheme.ClusterBase)),
-            ColorRow("Borde de las celdas", nameof(ChartTheme.CellBorder)),
-            ColorRow("Texto de las celdas", nameof(ChartTheme.ClusterText)),
-            ColorRow("Texto del POC en las celdas", nameof(ChartTheme.ClusterTextStrong)),
+            ColorRow("Cell border", nameof(ChartTheme.CellBorder)),
+            ColorRow("Cell text", nameof(ChartTheme.ClusterText)),
+            ColorRow("POC text in cells", nameof(ChartTheme.ClusterTextStrong)),
             ColorRow("Texto de las escaleras", nameof(ChartTheme.LadderText)),
             ColorRow("Escalera: resaltado positivo", nameof(ChartTheme.LadderPositive)),
             ColorRow("Escalera: resaltado negativo", nameof(ChartTheme.LadderNegative)),
             ColorRow("POC", nameof(ChartTheme.Poc)),
-            ColorRow("Área de valor", nameof(ChartTheme.ValueArea)),
+            ColorRow("Value area", nameof(ChartTheme.ValueArea)),
             ColorRow("Desequilibrio comprador", nameof(ChartTheme.ImbalanceAsk)),
             ColorRow("Desequilibrio vendedor", nameof(ChartTheme.ImbalanceBid)),
             ColorRow("Delta positivo", nameof(ChartTheme.DeltaPositiveText)),
             ColorRow("Delta negativo", nameof(ChartTheme.DeltaNegativeText)),
-            ColorRow("Perfil de volumen", nameof(ChartTheme.ProfileBar)),
+            ColorRow("Volume profile", nameof(ChartTheme.ProfileBar)),
             Note("Estos son los colores de todo el gráfico. Cada columna del footprint (escalera de delta, volumen, bid o ask, celdas o perfil) también puede tener los suyos, texto incluido, en el Editor de footprint."));
 
         // grosor y trazo de la línea entrada → salida (las operaciones propias y las de las estrategias)
@@ -134,19 +134,19 @@ internal sealed class ChartSettingsWindow : Window
 
         Tab("Operaciones",
             Ui.H3("Líneas de entrada a salida"),
-            ColorRow("Operación ganadora", nameof(ChartTheme.TradeWin)),
-            ColorRow("Operación perdedora", nameof(ChartTheme.TradeLoss)),
+            ColorRow("Winning trade", nameof(ChartTheme.TradeWin)),
+            ColorRow("Losing trade", nameof(ChartTheme.TradeLoss)),
             Row("Grosor", Ui.H(10, width, widthText)),
             Row("Trazo", style),
             Toggle("Marcar mis operaciones (ejecuciones y de la entrada a la salida)", () => _model.Settings.ShowTradeMarks, v => _model.Settings.ShowTradeMarks = v),
             Note("Las líneas de las estrategias puestas en el gráfico usan los mismos colores, grosor y trazo."),
             Ui.H3("Órdenes y posición"),
-            ColorRow("Orden de compra", nameof(ChartTheme.BuyOrder)),
-            ColorRow("Orden de venta", nameof(ChartTheme.SellOrder)),
-            ColorRow("Posición larga / compras", nameof(ChartTheme.PositionLong)),
-            ColorRow("Posición corta / ventas", nameof(ChartTheme.PositionShort)));
+            ColorRow("Buy order", nameof(ChartTheme.BuyOrder)),
+            ColorRow("Sell order", nameof(ChartTheme.SellOrder)),
+            ColorRow("Long position / buys", nameof(ChartTheme.PositionLong)),
+            ColorRow("Short position / sells", nameof(ChartTheme.PositionShort)));
 
-        var head = Ui.V(4, Ui.H2("Configuración del gráfico"), Note($"{chart.Symbol} · {_model.Period.DisplayName}. Los cambios se ven al instante y quedan guardados en este gráfico."));
+        var head = Ui.V(4, Ui.H2("Chart settings"), Note($"{chart.Symbol} · {_model.Period.DisplayName}. Los cambios se ven al instante y quedan guardados en este gráfico."));
         head.Margin = new Thickness(20, 16, 20, 4);
         var body = new DockPanel();
         DockPanel.SetDock(head, Dock.Top);
@@ -159,7 +159,7 @@ internal sealed class ChartSettingsWindow : Window
             Changed();
         });
         ToolTip.SetTip(reset, "Vuelve a los colores de siempre en este gráfico");
-        var toAll = Ui.Button("Aplicar a todos los gráficos", MaterialIconKind.ContentCopy, () =>
+        var toAll = Ui.Button("Apply to all charts", MaterialIconKind.ContentCopy, () =>
         {
             int n = _host.ApplyChartLook(_chart);
             Title = $"Configuración del gráfico · aplicada a {n} gráfico{(n == 1 ? "" : "s")}";
@@ -290,7 +290,7 @@ internal sealed class ChartSettingsWindow : Window
             Set(property, (c & 0x00FFFFFF) | ((uint)Math.Round(opacity.Value) << 24));
         };
         var reset = SmallButton("Restablecer", () => Set(property, null));
-        flyout.Content = Ui.V(10, Ui.H3(label), palette, Ui.H(8, new TextBlock { Text = "Código", Classes = { "muted" }, VerticalAlignment = VerticalAlignment.Center }, hex),
+        flyout.Content = Ui.V(10, Ui.H3(label), palette, Ui.H(8, new TextBlock { Text = "Code", Classes = { "muted" }, VerticalAlignment = VerticalAlignment.Center }, hex),
             Ui.H(8, new TextBlock { Text = "Opacidad", Classes = { "muted" }, VerticalAlignment = VerticalAlignment.Center }, opacity, opacityText), reset).Also(v => v.Margin = new Thickness(12));
 
         var button = new Button { Content = Ui.H(8, swatch, code), Padding = new Thickness(6, 3), MinHeight = 26, Flyout = flyout, HorizontalAlignment = HorizontalAlignment.Left };

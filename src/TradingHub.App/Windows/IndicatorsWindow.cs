@@ -71,7 +71,7 @@ public sealed class IndicatorsWindow : Window
         ((Control)_search.InnerLeftContent).Margin = new Thickness(8, 0, 0, 0);
         DockPanel.SetDock(_search, Dock.Top);
         left.Children.Add(_search);
-        var add = Ui.Button("Agregar al gráfico", MaterialIconKind.Plus, AddSelected, "primary");
+        var add = Ui.Button("Add to chart", MaterialIconKind.Plus, AddSelected, "primary");
         add.HorizontalAlignment = HorizontalAlignment.Stretch;
         add.HorizontalContentAlignment = HorizontalAlignment.Center;
         add.Margin = new Thickness(0, 10, 0, 0);
@@ -86,7 +86,7 @@ public sealed class IndicatorsWindow : Window
         var mid = new DockPanel();
         var midHeader = new DockPanel { Margin = new Thickness(0, 0, 0, 10) };
         var tools = Ui.H(2,
-            Ui.IconButton(MaterialIconKind.EyeOutline, "Mostrar / ocultar", () => WithSelected(s =>
+            Ui.IconButton(MaterialIconKind.EyeOutline, "Show / hide", () => WithSelected(s =>
             {
                 s.Visible = !s.Visible;
                 _model.Invalidate();
@@ -97,14 +97,14 @@ public sealed class IndicatorsWindow : Window
                 _model.MoveToPanel(s, s.Panel == null ? new SubPanel() : null);
                 _model.Invalidate();
             }), 17),
-            Ui.IconButton(MaterialIconKind.DeleteOutline, "Quitar del gráfico", () => WithSelected(s =>
+            Ui.IconButton(MaterialIconKind.DeleteOutline, "Remove from chart", () => WithSelected(s =>
             {
                 _model.RemoveIndicator(s);
                 _grid.Target = null;
             }), 17));
         DockPanel.SetDock(tools, Dock.Right);
         midHeader.Children.Add(tools);
-        midHeader.Children.Add(Ui.H3("En el gráfico"));
+        midHeader.Children.Add(Ui.H3("On chart"));
         DockPanel.SetDock(midHeader, Dock.Top);
         mid.Children.Add(midHeader);
         _onChart.SelectionChanged += (_, _) => SelectSlot();
@@ -156,7 +156,7 @@ public sealed class IndicatorsWindow : Window
             {
                 var row = new DockPanel();
                 // sin etiqueta de origen para los de la biblioteca (Trading Hub y los técnicos); solo los tuyos y los extra
-                if (i.Source != "Trading Hub" && i.Source != "Técnicos")
+                if (i.Source != "Trading Hub" && i.Source != "Technical")
                 {
                     string tag = i.Source == UserScripts.Source ? "propio" : "extra";
                     var badge = new Border { Child = new TextBlock { Text = tag, FontSize = 10 }, Classes = { "pill" }, Padding = new Thickness(6, 1) };
@@ -229,7 +229,7 @@ public sealed class IndicatorsWindow : Window
         var save = new MenuItem { Header = "Guardar estos ajustes como plantilla…", Icon = Ui.Icon(MaterialIconKind.ContentSaveOutline, 16) };
         save.Click += async (_, _) =>
         {
-            var name = await PromptDialog.ShowAsync(this, $"Plantilla de {ind.Name}", "Nombre de la plantilla (guarda todos sus ajustes y colores)", def ?? ind.Name, "Guardar");
+            var name = await PromptDialog.ShowAsync(this, $"Plantilla de {ind.Name}", "Nombre de la plantilla (guarda todos sus ajustes y colores)", def ?? ind.Name, "Save");
             if (string.IsNullOrWhiteSpace(name)) return;
             Workspace.SaveIndicatorTemplate(ind, name);
             _subtitle.Text = $"Plantilla «{name.Trim()}» guardada";
@@ -271,11 +271,11 @@ public sealed class IndicatorsWindow : Window
                 return mi;
             }
 
-            forNew.Items.Add(Choice("Ajustes de fábrica", null));
+            forNew.Items.Add(Choice("Factory defaults", null));
             foreach (var n in names) forNew.Items.Add(Choice(n, n));
             flyout.Items.Add(forNew);
 
-            var delete = new MenuItem { Header = "Borrar una plantilla", Icon = Ui.Icon(MaterialIconKind.DeleteOutline, 16) };
+            var delete = new MenuItem { Header = "Delete template", Icon = Ui.Icon(MaterialIconKind.DeleteOutline, 16) };
             foreach (var n in names)
             {
                 var mi = new MenuItem { Header = n };
