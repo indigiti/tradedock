@@ -6,7 +6,7 @@ Footprint charts, Depth of Market (DOM) trading, professional backtesting design
 
 Created by [@ralphtradesz](https://x.com/ralphtradesz).
 
-**Using Windows?** See [Porting Trading Hub to Windows](PORTAR_A_WINDOWS.md).
+**Using Windows?** See [Porting Trading Hub to Windows](docs/en/portar-a-windows.md).
 
 ![Trading Hub](docs/img/trading.png)
 
@@ -92,7 +92,7 @@ On an Apple Silicon Mac, open a terminal in the repository folder, start `claude
 Install Trading Hub on my Mac by following CLAUDE.md.
 ```
 
-The installation assistant checks prerequisites, installs any missing .NET components without an administrator password, builds the application, and installs it into Applications. The detailed installation instructions are in [INSTALAR_CON_CLAUDE_CODE.md](INSTALAR_CON_CLAUDE_CODE.md). **Note:** that linked guide is currently in Spanish.
+The installation assistant checks prerequisites, installs any missing .NET components without an administrator password, builds the application, and installs it into Applications. The detailed installation instructions are in [INSTALAR_CON_CLAUDE_CODE.md](docs/en/instalar-con-claude-code.md). **Note:** the English instructions are maintained separately from the original Spanish source.
 
 ### Option 2: Install manually
 
@@ -110,7 +110,7 @@ The first build may take several minutes. The application is installed at `/Appl
 
 ## Windows support
 
-The current project targets Apple Silicon macOS. Its .NET and Avalonia foundation can also support Windows, but macOS-specific functionality must be adapted. A detailed staged plan is provided in [PORTAR_A_WINDOWS.md](PORTAR_A_WINDOWS.md) (currently in Spanish).
+The current project targets Apple Silicon macOS. Its .NET and Avalonia foundation can also support Windows, but macOS-specific functionality must be adapted. A detailed staged plan is provided in [PORTAR_A_WINDOWS.md](docs/en/portar-a-windows.md) (English guide).
 
 For a 64-bit Windows 10 or 11 computer:
 
@@ -138,25 +138,25 @@ This script adapts compatible namespaces and handles some compilation difference
 
 ## Documentation
 
-The full guides currently remain in Spanish and are linked here by topic:
+English guides are available by topic below. The original, more detailed Spanish sources remain available under `docs/`:
 
 | Topic | Guide |
 |---|---|
-| Installation | [Installation and updates](docs/instalacion.md) |
-| Getting started | [First steps](docs/primeros-pasos.md) |
-| Connections | [Broker and market-data connections](docs/conexiones.md) |
-| Charts | [Charts, footprint, DOM, and drawings](docs/graficos.md) |
-| Trading | [Orders, bracket orders, and accounts](docs/operar.md) |
-| Data | [Recording, downloading, and CSV imports](docs/datos.md) |
-| Strategies | [C# strategy API](docs/estrategias.md) |
-| Backtesting | [Optimization and robustness](docs/backtesting.md) |
-| Live operation | [Live strategies and risk limits](docs/en-vivo.md) |
-| Claude | [AI strategy assistant and MCP laboratory](docs/asistente-claude.md) |
-| Indicators | [Built-in and custom indicators](docs/indicadores.md) |
-| Settings | [Preferences](docs/ajustes.md) |
-| Privacy | [Local storage and network access](docs/privacidad.md) |
-| Development | [Builds, tests, and project structure](docs/desarrollo.md) |
-| Windows | [Windows porting guide](PORTAR_A_WINDOWS.md) |
+| Installation | [Installation and updates](docs/en/instalacion.md) |
+| Getting started | [First steps](docs/en/primeros-pasos.md) |
+| Connections | [Broker and market-data connections](docs/en/conexiones.md) |
+| Charts | [Charts, footprint, DOM, and drawings](docs/en/graficos.md) |
+| Trading | [Orders, bracket orders, and accounts](docs/en/operar.md) |
+| Data | [Recording, downloading, and CSV imports](docs/en/datos.md) |
+| Strategies | [C# strategy API](docs/en/estrategias.md) |
+| Backtesting | [Optimization and robustness](docs/en/backtesting.md) |
+| Live operation | [Live strategies and risk limits](docs/en/en-vivo.md) |
+| Claude | [AI strategy assistant and MCP laboratory](docs/en/asistente-claude.md) |
+| Indicators | [Built-in and custom indicators](docs/en/indicadores.md) |
+| Settings | [Preferences](docs/en/ajustes.md) |
+| Privacy | [Local storage and network access](docs/en/privacidad.md) |
+| Development | [Builds, tests, and project structure](docs/en/desarrollo.md) |
+| Windows | [Windows porting guide](docs/en/portar-a-windows.md) |
 
 The [original Spanish README](README.es.md) is retained for reference.
 

@@ -2,37 +2,37 @@
 
 [← Back to the main README](../README.md)
 
-This directory contains the full platform documentation organized by feature. **The detailed guides linked below are currently written in Spanish.** This English index helps locate the right documentation while further translations are prepared.
+This directory contains the full platform documentation organized by feature. **English-language guides are linked below.** The original Spanish versions remain available in this directory, and some English guides are condensed relative to the originals.
 
 ## Getting started
 
-- [Installation](instalacion.md): Requirements, building, installation, updates, and uninstalling.
-- [First steps](primeros-pasos.md): Explore the main interface and simulated account.
-- [Connections](conexiones.md): Brokers, exchanges, market-data providers, and simulated or real accounts.
+- [Installation](en/instalacion.md): Requirements, building, installation, updates, and uninstalling.
+- [First steps](en/primeros-pasos.md): Explore the main interface and simulated account.
+- [Connections](en/conexiones.md): Brokers, exchanges, market-data providers, and simulated or real accounts.
 
 ## Charts and trading
 
-- [Charts](graficos.md): Timeframes, footprint charts, DOM, drawings, templates, indicators, and replay.
-- [Trading](operar.md): Chart Trader, DOM, order types, brackets, accounts, and trading history.
-- [Indicators](indicadores.md): Included indicators, custom C# indicators, and ATAS API compatibility.
+- [Charts](en/graficos.md): Timeframes, footprint charts, DOM, drawings, templates, indicators, and replay.
+- [Trading](en/operar.md): Chart Trader, DOM, order types, brackets, accounts, and trading history.
+- [Indicators](en/indicadores.md): Included indicators, custom C# indicators, and ATAS API compatibility.
 
 ## Data
 
-- [Market data](datos.md): Automatic recording, downloads, Databento, combining sources, and CSV imports.
+- [Market data](en/datos.md): Automatic recording, downloads, Databento, combining sources, and CSV imports.
 
 ## Strategies
 
-- [Strategies](estrategias.md): C# strategy API and worked examples.
-- [Backtesting](backtesting.md): Backtests, Bayesian optimization, walk-forward, PBO, CPCV, Monte Carlo, and market-condition analysis.
-- [Live strategies](en-vivo.md): Live accounts, risk limits, portfolios, and risk agents.
-- [Claude integration](asistente-claude.md): Strategy assistant and MCP laboratory.
+- [Strategies](en/estrategias.md): C# strategy API and worked examples.
+- [Backtesting](en/backtesting.md): Backtests, Bayesian optimization, walk-forward, PBO, CPCV, Monte Carlo, and market-condition analysis.
+- [Live strategies](en/en-vivo.md): Live accounts, risk limits, portfolios, and risk agents.
+- [Claude integration](en/asistente-claude.md): Strategy assistant and MCP laboratory.
 
 ## Additional guides
 
-- [Settings](ajustes.md): Application preferences.
-- [Privacy](privacidad.md): Local data and network connections.
-- [Development](desarrollo.md): Source structure, builds, tests, and headless screenshot scenes.
-- [Windows porting](../PORTAR_A_WINDOWS.md): Porting plan and prompt for Claude Code.
+- [Settings](en/ajustes.md): Application preferences.
+- [Privacy](en/privacidad.md): Local data and network connections.
+- [Development](en/desarrollo.md): Source structure, builds, tests, and headless screenshot scenes.
+- [Windows porting](en/portar-a-windows.md): Porting plan and prompt for Claude Code.
 
 ---
 
