@@ -28,7 +28,7 @@ internal sealed class ChartWindow : Window
         Background = Ui.Bg0;
         Icon = AppIcon.Window;
 
-        var dock = Ui.IconButton(MaterialIconKind.DockWindow, "Volver a la ventana principal", () => _host.DockBack(this));
+        var dock = Ui.IconButton(MaterialIconKind.DockWindow, "Return to main window", () => _host.DockBack(this));
         Toolbar = new ChartToolbar(host, true, dock) { Chart = chart };
         DockPanel.SetDock(Toolbar, Dock.Top);
         _content.Children.Add(Toolbar);
