@@ -44,7 +44,7 @@ internal sealed partial class StrategiesView
         (FitnessMetric.ProfitFactor, "Profit factor"),
         (FitnessMetric.Sharpe, "Sharpe"),
         (FitnessMetric.Sortino, "Sortino"),
-        (FitnessMetric.RecoveryFactor, "Factor de recuperación"),
+        (FitnessMetric.RecoveryFactor, "Recovery factor"),
         (FitnessMetric.Expectancy, "Expectativa"),
         (FitnessMetric.WinRate, "% ganadoras"),
     };
@@ -80,7 +80,7 @@ internal sealed partial class StrategiesView
 
         // tabla de resultados
         var header = new Grid { ColumnDefinitions = new ColumnDefinitions(OptColumns), Margin = new Thickness(12, 0, 12, 6) };
-        string[] titles = { "#", "Parámetros", "Resultado", "PF", "Drawdown", "Oper.", "% gan.", "Sharpe", "Métrica" };
+        string[] titles = { "#", "Parameters", "Resultado", "PF", "Drawdown", "Oper.", "% gan.", "Sharpe", "Métrica" };
         for (int i = 0; i < titles.Length; i++)
         {
             var t = new TextBlock { Text = titles[i], Classes = { "h3" }, TextAlignment = i >= 2 ? TextAlignment.Right : TextAlignment.Left, Margin = new Thickness(0, 0, 8, 0) };
@@ -119,7 +119,7 @@ internal sealed partial class StrategiesView
         var tableHead = new DockPanel { Margin = new Thickness(0, 0, 0, 10) };
         DockPanel.SetDock(use, Dock.Right);
         tableHead.Children.Add(use);
-        tableHead.Children.Add(Ui.V(2, Ui.H2("Resultados"), new TextBlock { Text = "Ordenados por la métrica elegida. Ojo con el sobreajuste: validá con walk-forward.", Classes = { "faint", "small" } }));
+        tableHead.Children.Add(Ui.V(2, Ui.H2("Results"), new TextBlock { Text = "Ordenados por la métrica elegida. Ojo con el sobreajuste: validá con walk-forward.", Classes = { "faint", "small" } }));
         var table = new DockPanel();
         DockPanel.SetDock(header, Dock.Top);
         table.Children.Add(header);
@@ -211,7 +211,7 @@ internal sealed partial class StrategiesView
     /// </summary>
     private Control PeriodRow(ParameterRange range)
     {
-        var check = new CheckBox { Content = "Período de las velas", IsChecked = range.Enabled, FontSize = 12.5 };
+        var check = new CheckBox { Content = "Bar period", IsChecked = range.Enabled, FontSize = 12.5 };
         ToolTip.SetTip(check, "Prueba cada combinación en cada período tildado, como un parámetro más");
         var chips = new WrapPanel { ItemSpacing = 4, LineSpacing = 4, Margin = new Thickness(26, 4, 0, 0) };
         var toggles = new List<(ToggleButton Button, string Code)>();
@@ -246,7 +246,7 @@ internal sealed partial class StrategiesView
     }
 
     /// <summary>El nombre de un parámetro para mostrar (el período de las velas no es de la estrategia).</summary>
-    private static string ParamName(string name) => name == ParameterRange.PeriodName ? "Período" : name;
+    private static string ParamName(string name) => name == ParameterRange.PeriodName ? "Period" : name;
 
     private void UpdateComboCount()
     {
@@ -450,7 +450,7 @@ internal sealed partial class StrategiesView
         var left = new ScrollViewer { Content = config, Width = 380 };
 
         var header = new Grid { ColumnDefinitions = new ColumnDefinitions(WfoColumns), Margin = new Thickness(12, 0, 12, 6) };
-        string[] titles = { "#", "Optimización", "Prueba", "Mejores parámetros", "Dentro", "Fuera", "Efic." };
+        string[] titles = { "#", "Optimization", "Prueba", "Mejores parámetros", "Dentro", "Fuera", "Efic." };
         for (int i = 0; i < titles.Length; i++)
         {
             var t = new TextBlock { Text = titles[i], Classes = { "h3" }, TextAlignment = i >= 4 ? TextAlignment.Right : TextAlignment.Left, Margin = new Thickness(0, 0, 8, 0) };

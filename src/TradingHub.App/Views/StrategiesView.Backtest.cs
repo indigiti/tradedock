@@ -19,7 +19,7 @@ internal sealed partial class StrategiesView
     private static readonly CultureInfo Es = CultureInfo.GetCultureInfo("es-AR");
 
     // configuración
-    private readonly ComboBox _dataSource = new() { HorizontalAlignment = HorizontalAlignment.Stretch, PlaceholderText = "Sin datos guardados" };
+    private readonly ComboBox _dataSource = new() { HorizontalAlignment = HorizontalAlignment.Stretch, PlaceholderText = "No saved data" };
     private readonly TextBlock _dataInfo = new() { Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap };
     private readonly TextBox _period = new() { Text = "M5", Watermark = "M5, H1, D1, Tick500…" };
     private readonly CalendarDatePicker _from = new() { HorizontalAlignment = HorizontalAlignment.Stretch };
@@ -58,7 +58,7 @@ internal sealed partial class StrategiesView
     private Control BuildBacktestPage()
     {
         _runButton = Ui.Button("Correr backtest", MaterialIconKind.Play, () => _ = RunBacktestAsync(), "primary");
-        _stopButton = Ui.Button("Detener", MaterialIconKind.Stop, () => _cts?.Cancel());
+        _stopButton = Ui.Button("Stop", MaterialIconKind.Stop, () => _cts?.Cancel());
         _stopButton.IsEnabled = false;
         _limitMode.Items.Add(new ComboBoxItem { Content = "Solo si el precio lo atraviesa", Tag = LimitFillMode.TradeThrough });
         _limitMode.Items.Add(new ComboBoxItem { Content = "Apenas lo toca (optimista)", Tag = LimitFillMode.Touch });
@@ -78,7 +78,7 @@ internal sealed partial class StrategiesView
 
         // rangos rápidos sobre lo guardado del instrumento elegido (con «Todo», toda la historia de Databento)
         var ranges = new WrapPanel { ItemSpacing = 4, LineSpacing = 4 };
-        foreach (var (label, days) in new[] { ("1 semana", 7), ("1 mes", 30), ("3 meses", 91), ("6 meses", 182), ("1 año", 365), ("Todo", 0) })
+        foreach (var (label, days) in new[] { ("1 semana", 7), ("1 mes", 30), ("3 meses", 91), ("6 meses", 182), ("1 year", 365), ("Todo", 0) })
         {
             var b = new Button { Content = label, Padding = new Thickness(8, 2), MinHeight = 24, FontSize = 11.5 };
             b.Click += (_, _) => SetRange(days);
@@ -86,29 +86,29 @@ internal sealed partial class StrategiesView
         }
 
         var dataCard = Ui.Card(Ui.V(12,
-            Ui.H(8, Ui.Icon(MaterialIconKind.DatabaseOutline, 17, Ui.Accent), Ui.H2("Datos")),
-            Ui.Field("Instrumento (datos guardados)", _dataSource),
+            Ui.H(8, Ui.Icon(MaterialIconKind.DatabaseOutline, 17, Ui.Accent), Ui.H2("Data")),
+            Ui.Field("Instrument (saved data)", _dataSource),
             _dataInfo,
             Ui.Row(10, Ui.Field("Desde", _from), Ui.Field("Hasta", _to)),
             ranges,
-            Ui.Field("Período de las velas", Ui.V(6, _period, periods))));
+            Ui.Field("Bar period", Ui.V(6, _period, periods))));
 
         var execCard = Ui.Card(Ui.V(12,
-            Ui.H(8, Ui.Icon(MaterialIconKind.ScaleBalance, 17, Ui.Accent), Ui.H2("Ejecución")),
+            Ui.H(8, Ui.Icon(MaterialIconKind.ScaleBalance, 17, Ui.Accent), Ui.H2("Execution")),
             Ui.Row(10, Ui.Field("Capital inicial", _capital), Ui.Field("Deslizamiento (ticks)", _slippage)),
-            Ui.Row(10, Ui.Field("Comisión % por lado", _commPct), Ui.Field("Comisión fija por unidad", _commUnit)),
-            Ui.Field("Órdenes límite", _limitMode),
-            Ui.Row(10, Ui.Field("Zona de la sesión", _timeZone), Ui.Field("Inicio de sesión (h)", _sessionStart))));
+            Ui.Row(10, Ui.Field("Commission % per side", _commPct), Ui.Field("Fixed commission per unit", _commUnit)),
+            Ui.Field("Limit orders", _limitMode),
+            Ui.Row(10, Ui.Field("Session time zone", _timeZone), Ui.Field("Session start (h)", _sessionStart))));
 
         var paramsCard = Ui.Card(Ui.V(12,
-            Ui.H(8, Ui.Icon(MaterialIconKind.TuneVariant, 17, Ui.Accent), Ui.H2("Parámetros")),
+            Ui.H(8, Ui.Icon(MaterialIconKind.TuneVariant, 17, Ui.Accent), Ui.H2("Parameters")),
             _paramsPanel));
 
         var liveCard = Ui.Card(Ui.V(12,
             Ui.H(8, Ui.Icon(MaterialIconKind.AccessPoint, 17, Ui.Accent), Ui.H2("Llevar a vivo")),
             new TextBlock { Text = "Con estos parámetros, estas velas y esta sesión. Lo que corre en tiempo real (de acá y de los gráficos) se gestiona en la sección En vivo.", Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap },
-            Ui.Button("Ejecutar en vivo…", MaterialIconKind.Play, () => _ = OpenLiveLaunchAsync(), "primary"),
-            Ui.Button("Poner en el gráfico activo", MaterialIconKind.ChartBoxPlusOutline, () => _ = PutOnChartAsync()),
+            Ui.Button("Run live…", MaterialIconKind.Play, () => _ = OpenLiveLaunchAsync(), "primary"),
+            Ui.Button("Add to active chart", MaterialIconKind.ChartBoxPlusOutline, () => _ = PutOnChartAsync()),
             new TextBlock { Text = "En el gráfico funciona como un indicador: marca dónde entra y sale; desde su configuración la dejás solo visual o ejecutando en una cuenta.", Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap }));
 
         var runBox = Ui.V(10, Ui.Row(10, _stopButton, _runButton), _runProgress, _runStatus);
@@ -127,14 +127,14 @@ internal sealed partial class StrategiesView
         var resultTabs = new Ui.Segmented<string>(new[]
         {
             ("trades", "Operaciones", (string?)null),
-            ("metrics", "Métricas", (string?)null),
-            ("market", "Según el mercado", (string?)"Cómo le fue en rango, mixto o tendencia y con volatilidad baja, normal o alta; y volver a correrlo solo en las condiciones que elijas"),
+            ("metrics", "Metrics", (string?)null),
+            ("market", "By market", (string?)"Cómo le fue en rango, mixto o tendencia y con volatilidad baja, normal o alta; y volver a correrlo solo en las condiciones que elijas"),
             ("mc", "Monte Carlo", (string?)null),
             ("log", "Registro", (string?)null),
         });
         var tradesBox = BuildTradesTable();
         var metricsBox = new ScrollViewer { Content = _metricsGrid };
-        var mcRun = Ui.Button("Simular 1.000 órdenes al azar", MaterialIconKind.Dice5Outline, RunMonteCarlo);
+        var mcRun = Ui.Button("Simulate 1,000 randomized trade sequences", MaterialIconKind.Dice5Outline, RunMonteCarlo);
         var mcBox = Ui.V(14, Ui.H(12, mcRun, new TextBlock { Text = "Mezcla el orden de las operaciones para ver qué drawdowns podrían haber pasado con la misma ventaja.", Classes = { "muted", "small" }, TextWrapping = TextWrapping.Wrap, MaxWidth = 520 }), _mcKpis, _mcChart);
         var logBox = _logBox;
         var marketBox = new ScrollViewer { Content = _marketBox };
@@ -579,7 +579,7 @@ internal sealed partial class StrategiesView
         _kpis.Children.Add(Kpi("Resultado neto", Money(m.NetProfit), $"{m.ReturnPercent:0.##}% del capital", m.NetProfit >= 0 ? Ui.Up : Ui.Down));
         _kpis.Children.Add(Kpi("Profit factor", m.ProfitFactor >= 999 ? "∞" : m.ProfitFactor.ToString("0.00", Es), $"{Money(m.GrossProfit)} / {Money(-m.GrossLoss)}", m.ProfitFactor >= 1.3m ? Ui.Up : m.ProfitFactor >= 1 ? Ui.Warn : Ui.Down));
         _kpis.Children.Add(Kpi("Ganadoras", $"{m.WinRate:0.#}%", $"{m.Winners} de {m.TotalTrades}", null));
-        _kpis.Children.Add(Kpi("Drawdown máx.", Money(-m.MaxDrawdown), $"{m.MaxDrawdownPercent:0.##}% · recupera {m.RecoveryFactor:0.##}x", Ui.Down));
+        _kpis.Children.Add(Kpi("Max drawdown", Money(-m.MaxDrawdown), $"{m.MaxDrawdownPercent:0.##}% · recupera {m.RecoveryFactor:0.##}x", Ui.Down));
         _kpis.Children.Add(Kpi("Sharpe", m.SharpeRatio.ToString("0.00", Es), $"Sortino {m.SortinoRatio:0.00}", m.SharpeRatio >= 1 ? Ui.Up : null));
         _kpis.Children.Add(Kpi("Expectativa", Money(m.Expectancy), $"prom. {Money(m.AverageWin)} / {Money(m.AverageLoss)}", m.Expectancy >= 0 ? Ui.Up : Ui.Down));
         _equity.SetData(r.Equity, r.Settings.InitialCapital);
@@ -606,11 +606,11 @@ internal sealed partial class StrategiesView
         _metricsGrid.RowDefinitions.Clear();
         var rows = new (string, string)[]
         {
-            ("Resultado neto", Money(m.NetProfit)), ("Ganancia bruta", Money(m.GrossProfit)), ("Pérdida bruta", Money(-m.GrossLoss)), ("Comisiones", Money(-m.Commission)),
+            ("Resultado neto", Money(m.NetProfit)), ("Gross profit", Money(m.GrossProfit)), ("Gross loss", Money(-m.GrossLoss)), ("Comisiones", Money(-m.Commission)),
             ("Profit factor", m.ProfitFactor.ToString("0.00", Es)), ("Retorno", $"{m.ReturnPercent:0.##}%"), ("Operaciones", m.TotalTrades.ToString()), ("Ganadoras / perdedoras", $"{m.Winners} / {m.Losers}"),
-            ("% ganadoras", $"{m.WinRate:0.##}%"), ("Promedio por operación", Money(m.AverageTrade)), ("Ganancia promedio", Money(m.AverageWin)), ("Pérdida promedio", Money(m.AverageLoss)),
-            ("Relación ganancia/pérdida", m.PayoffRatio.ToString("0.00", Es)), ("Expectativa", Money(m.Expectancy)), ("Mayor ganancia", Money(m.LargestWin)), ("Mayor pérdida", Money(m.LargestLoss)),
-            ("Racha ganadora máx.", m.MaxConsecutiveWins.ToString()), ("Racha perdedora máx.", m.MaxConsecutiveLosses.ToString()), ("Drawdown máximo", $"{Money(-m.MaxDrawdown)} ({m.MaxDrawdownPercent:0.##}%)"), ("Factor de recuperación", m.RecoveryFactor.ToString("0.00", Es)),
+            ("% ganadoras", $"{m.WinRate:0.##}%"), ("Average per trade", Money(m.AverageTrade)), ("Average profit", Money(m.AverageWin)), ("Average loss", Money(m.AverageLoss)),
+            ("Win/loss ratio", m.PayoffRatio.ToString("0.00", Es)), ("Expectativa", Money(m.Expectancy)), ("Largest profit", Money(m.LargestWin)), ("Largest loss", Money(m.LargestLoss)),
+            ("Longest winning streak", m.MaxConsecutiveWins.ToString()), ("Longest losing streak", m.MaxConsecutiveLosses.ToString()), ("Maximum drawdown", $"{Money(-m.MaxDrawdown)} ({m.MaxDrawdownPercent:0.##}%)"), ("Recovery factor", m.RecoveryFactor.ToString("0.00", Es)),
             ("Sharpe (anual)", m.SharpeRatio.ToString("0.00", Es)), ("Sortino (anual)", m.SortinoRatio.ToString("0.00", Es)), ("Velas promedio en operación", m.AverageBarsInTrade.ToString("0.#", Es)), ("Tiempo en el mercado", $"{m.ExposurePercent:0.#}%"),
             ("Resultado largos", Money(m.LongNetProfit)), ("Resultado cortos", Money(m.ShortNetProfit)), ("Ticks simulados", r.Ticks.ToString("N0", Es)), ("Velas", r.Bars.ToString("N0", Es)),
         };

@@ -55,7 +55,7 @@ internal sealed partial class LiveView
 
     private Control BuildPortfoliosPage()
     {
-        var create = Ui.Button("Nuevo portafolio", MaterialIconKind.FolderPlusOutline, () => _ = EditPortfolioAsync(null));
+        var create = Ui.Button("New portfolio", MaterialIconKind.FolderPlusOutline, () => _ = EditPortfolioAsync(null));
         var bar = new DockPanel();
         DockPanel.SetDock(create, Dock.Right);
         bar.Children.Add(create);
@@ -130,11 +130,11 @@ internal sealed partial class LiveView
 
         // encabezado y acciones
         var actions = new WrapPanel { ItemSpacing = 8, LineSpacing = 8, HorizontalAlignment = HorizontalAlignment.Right };
-        if (!def.Auto) actions.Children.Add(Ui.Button("Agregar estrategia nueva", MaterialIconKind.Play, () => OpenLaunch(portfolioId: def.Id)));
+        if (!def.Auto) actions.Children.Add(Ui.Button("Add new strategy", MaterialIconKind.Play, () => OpenLaunch(portfolioId: def.Id)));
         if (p.Members.Any(x => !x.Running && !x.Locked)) actions.Children.Add(Ui.Button("Iniciar todas", MaterialIconKind.PlayCircleOutline, () => _ = StartAllAsync(p), "primary"));
-        if (p.Members.Any(x => x.Running && !x.Locked)) actions.Children.Add(Ui.Button("Detener todas", MaterialIconKind.StopCircleOutline, () => _ = StopAllAsync(p)));
+        if (p.Members.Any(x => x.Running && !x.Locked)) actions.Children.Add(Ui.Button("Stop all", MaterialIconKind.StopCircleOutline, () => _ = StopAllAsync(p)));
         actions.Children.Add(Ui.Button("Editar", MaterialIconKind.PencilOutline, () => _ = EditPortfolioAsync(def)));
-        if (!def.Auto) actions.Children.Add(Ui.Button("Borrar", MaterialIconKind.DeleteOutline, () => _ = DeletePortfolioAsync(def), "danger"));
+        if (!def.Auto) actions.Children.Add(Ui.Button("Delete", MaterialIconKind.DeleteOutline, () => _ = DeletePortfolioAsync(def), "danger"));
         var head = new DockPanel();
         DockPanel.SetDock(actions, Dock.Right);
         head.Children.Add(actions);
@@ -149,10 +149,10 @@ internal sealed partial class LiveView
         kpis.Children.Add(Kpi("Operaciones", m.TotalTrades.ToString(Inv), m.TotalTrades > 0 ? $"{m.WinRate:0} % ganadoras" : "todavía ninguna", null,
             m.TotalTrades > 0 ? () => OpenTradesOf(p) : null));
         kpis.Children.Add(Kpi("Profit factor", m.TotalTrades > 0 ? (m.ProfitFactor >= 999 ? "∞" : m.ProfitFactor.ToString("0.00", Es)) : "—", m.TotalTrades > 0 ? $"media {Money(m.AverageTrade)} por operación" : ""));
-        kpis.Children.Add(Kpi("Drawdown máx.", (-m.MaxDrawdown).ToString("#,##0.00", Es), def.Capital > 0 ? $"{(m.MaxDrawdown / def.Capital * 100):0.#} % del capital" : ""));
+        kpis.Children.Add(Kpi("Max drawdown", (-m.MaxDrawdown).ToString("#,##0.00", Es), def.Capital > 0 ? $"{(m.MaxDrawdown / def.Capital * 100):0.#} % del capital" : ""));
         kpis.Children.Add(Kpi("Sharpe", analysis.Days.Count >= 5 ? m.SharpeRatio.ToString("0.00", Es) : "—", analysis.Days.Count >= 5 ? "anualizado, por día" : "hace falta más de una semana"));
         if (p.Members.Count > 1)
-            kpis.Children.Add(Kpi("Correlación media", analysis.Days.Count >= 3 ? analysis.AverageCorrelation.ToString("0.00", Es) : "—",
+            kpis.Children.Add(Kpi("Average correlation", analysis.Days.Count >= 3 ? analysis.AverageCorrelation.ToString("0.00", Es) : "—",
                 analysis.Days.Count >= 3 ? $"máxima {analysis.MaxCorrelation.ToString("0.00", Es)} · DD {analysis.DrawdownReductionPercent:0} % menor que la suma" : "hace falta más de un par de días",
                 analysis.AverageCorrelation > 0.6 ? Ui.Warn : null, null, "Correlación de Pearson del resultado diario entre las estrategias: cerca de 1 = se mueven juntas (diversifica poco)"));
         _portfolioDetail.Children.Add(kpis);
@@ -168,7 +168,7 @@ internal sealed partial class LiveView
         // correlación
         if (p.Members.Count > 1)
         {
-            _portfolioDetail.Children.Add(Ui.H3("Correlación entre estrategias"));
+            _portfolioDetail.Children.Add(Ui.H3("Strategy correlation"));
             _portfolioDetail.Children.Add(Ui.Card(CorrelationMatrix(p, analysis), 12));
         }
 
@@ -188,7 +188,7 @@ internal sealed partial class LiveView
         const string cols = "2.4*,1*,0.8*,1*,0.6*,0.7*,1*,0.9*,0.9*";
         var table = new StackPanel();
         var head = new Grid { ColumnDefinitions = new ColumnDefinitions(cols), Margin = new Thickness(6, 2, 6, 8) };
-        string[] titles = { "Estrategia", "Estado", "Tamaño", "Neto", "Ops", "PF", "DD máx.", "% del total", "Corr. media" };
+        string[] titles = { "Strategy", "Estado", "Size", "Neto", "Ops", "PF", "DD máx.", "% del total", "Corr. media" };
         for (int i = 0; i < titles.Length; i++)
         {
             var t = new TextBlock { Text = titles[i], Classes = { "h3" }, HorizontalAlignment = i >= 2 ? HorizontalAlignment.Right : HorizontalAlignment.Left, Margin = new Thickness(6, 0) };
@@ -363,8 +363,8 @@ internal sealed partial class LiveView
             top,
             explain,
             _agentRealNote,
-            Row(Ui.Field("Riesgo diario (% del capital)", _agentDailyRisk), Ui.Field("Drawdown máx. del portafolio (%)", _agentMaxDd), Ui.Field("Revisar cada (min)", _agentEvery)),
-            Row(Ui.Field("Tamaño mínimo (×)", _agentMinSize), Ui.Field("Tamaño máximo (×)", _agentMaxSize), Ui.Field("Modelo y esfuerzo", Ui.H(8, _agentModel!, _agentEffort!))),
+            Row(Ui.Field("Daily risk (% of capital)", _agentDailyRisk), Ui.Field("Portfolio max drawdown (%)", _agentMaxDd), Ui.Field("Revisar cada (min)", _agentEvery)),
+            Row(Ui.Field("Minimum size (×)", _agentMinSize), Ui.Field("Maximum size (×)", _agentMaxSize), Ui.Field("Modelo y esfuerzo", Ui.H(8, _agentModel!, _agentEffort!))),
             Ui.Field("Indicaciones", _agentInstructions),
             _agentState);
         _agentCard = Ui.Card(body, 16);
@@ -420,7 +420,7 @@ internal sealed partial class LiveView
 
     private async Task DeletePortfolioAsync(LivePortfolioDef def)
     {
-        if (!await ConfirmDialog.ShowAsync(_window, "Borrar portafolio", $"Se borra «{def.Name}». Sus estrategias siguen corriendo y pasan al automático.", "Borrar", danger: true)) return;
+        if (!await ConfirmDialog.ShowAsync(_window, "Delete portfolio", $"Se borra «{def.Name}». Sus estrategias siguen corriendo y pasan al automático.", "Delete", danger: true)) return;
         _svc.Live.DeletePortfolio(def.Id);
         _portfolioId = null;
         RefreshPortfolios(force: true);
@@ -439,7 +439,7 @@ internal sealed partial class LiveView
 
     private async Task StopAllAsync(LivePortfolioView p)
     {
-        if (!await ConfirmDialog.ShowAsync(_window, "Detener todas", $"Se detienen las estrategias de «{p.Def.Name}». Las posiciones abiertas quedan como están.", "Detener todas")) return;
+        if (!await ConfirmDialog.ShowAsync(_window, "Stop all", $"Se detienen las estrategias de «{p.Def.Name}». Las posiciones abiertas quedan como están.", "Stop all")) return;
         await _svc.Live.StopAllAsync(p, close: false);
         _status($"«{p.Def.Name}»: estrategias detenidas");
         RefreshPortfolios(force: true);

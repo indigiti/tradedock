@@ -73,7 +73,7 @@ internal sealed partial class StrategiesView
 
         _sendButton = Ui.Button("Enviar", MaterialIconKind.Send, () => _ = SendToClaudeAsync(_prompt.Text ?? ""), "primary");
         ToolTip.SetTip(_sendButton, "⌘Enter");
-        _stopButton2 = Ui.Button("Detener", MaterialIconKind.Stop, () => _claude.Cancel());
+        _stopButton2 = Ui.Button("Stop", MaterialIconKind.Stop, () => _claude.Cancel());
         _stopButton2.IsVisible = false;
         _prompt.KeyDown += (_, e) =>
         {
