@@ -65,7 +65,7 @@ internal sealed class ChartTraderPanel : UserControl
         }
 
         var open = new Button { Content = Ui.Icon(MaterialIconKind.ChevronLeft, 14), Padding = new Thickness(0), MinHeight = 0, Width = 14, VerticalAlignment = VerticalAlignment.Stretch, Background = Brushes.Transparent, BorderThickness = new Thickness(0) };
-        ToolTip.SetTip(open, "Mostrar el Chart Trader de este gráfico");
+        ToolTip.SetTip(open, "Show Chart Trader for this chart");
         open.Click += (_, _) => _host.SetTraderVisible(_chart, true);
         _collapsed.Child = open;
         _collapsed.Background = Ui.Bg1;
@@ -86,7 +86,7 @@ internal sealed class ChartTraderPanel : UserControl
 
     private Control Build()
     {
-        var close = Ui.IconButton(MaterialIconKind.ChevronRight, "Ocultar el Chart Trader de este gráfico", () => _host.SetTraderVisible(_chart, false), 15);
+        var close = Ui.IconButton(MaterialIconKind.ChevronRight, "Hide Chart Trader for this chart", () => _host.SetTraderVisible(_chart, false), 15);
         var head = new DockPanel { Margin = new Thickness(10, 8, 4, 4) };
         DockPanel.SetDock(close, Dock.Right);
         head.Children.Add(close);
@@ -99,7 +99,7 @@ internal sealed class ChartTraderPanel : UserControl
             Dispatcher.UIThread.Post(() => _host.SetChartAccount(_chart, a.Id));
         };
         _cross.Click += (_, _) => ShowCrossPicker();
-        ToolTip.SetTip(_cross, "Cross trading: mirás este gráfico y las órdenes van a otro instrumento (por ejemplo, mirás el ES y ejecutás en el MES)");
+        ToolTip.SetTip(_cross, "Cross trading: view one chart but route orders to a different instrument (such as ES to MES)");
         _qty.ValueChanged += (_, _) =>
         {
             if (_syncing) return;
@@ -247,7 +247,7 @@ internal sealed class ChartTraderPanel : UserControl
         if (price <= 0) price = data.LastPrice;
         if (price <= 0)
         {
-            _host.SetStatus("Todavía no hay precio del libro para esa orden");
+            _host.SetStatus("No order-book price is available for this order yet");
             return;
         }
 
@@ -313,7 +313,7 @@ internal sealed class ChartTraderPanel : UserControl
             if (n > 1)
             {
                 var pct = new NumericUpDown { Minimum = 1, Maximum = 100, Increment = 5, FormatString = "0", Value = target?.Percent ?? 100, ShowButtonSpinner = false, NumberFormat = CultureInfo.InvariantCulture.NumberFormat };
-                ToolTip.SetTip(pct, "% de la posición que cierra este objetivo");
+                ToolTip.SetTip(pct, "Percentage of the position closed by this target");
                 pct.ValueChanged += (_, _) => EditTemplate(tt =>
                 {
                     if (index < tt.Targets.Count) tt.Targets[index].Percent = pct.Value ?? 100;
@@ -391,7 +391,7 @@ internal sealed class ChartTraderPanel : UserControl
             await _host.SetCrossTradingAsync(_chart, symbol.Length == 0 ? null : symbol);
         };
         Fill();
-        flyout.Content = Ui.V(8, Ui.H3("Ejecutar en"), search, list, Ui.Faint("Las órdenes, el stop y los objetivos de este gráfico van al instrumento elegido; los precios se mandan tal cual (ideal para mini y micro).")).Also(v =>
+        flyout.Content = Ui.V(8, Ui.H3("Ejecutar en"), search, list, Ui.Faint("Orders, stops and targets route to the selected instrument using their original numerical prices (for example mini/micro contracts).")).Also(v =>
         {
             v.Margin = new Thickness(12);
             v.Width = 280;
@@ -512,7 +512,7 @@ internal sealed class ChartTraderPanel : UserControl
             _pnl.Foreground = realized > 0 ? Ui.Up : realized < 0 ? Ui.Down : Ui.Text1;
             _pnl.FontSize = realized != 0 ? 18 : 13;
             int orders = acc?.ActiveOrders.Count() ?? 0;
-            _position.Text = (realized != 0 ? "Plana · resultado del día" : "Plana") + (orders > 0 ? $" · {orders} orden(es)" : "");
+            _position.Text = (realized != 0 ? "Flat · today's PnL" : "Plana") + (orders > 0 ? $" · {orders} orden(es)" : "");
         }
         else
         {

@@ -33,7 +33,7 @@ internal sealed class LiveStrategyWindow : Window
     private readonly NumericUpDown _size = Num(0.01m, 0, 100, "0.##");
     private readonly NumericUpDown _dailyLoss = Num(10, 0, 100_000_000, "0.##");
     private readonly NumericUpDown _maxDd = Num(10, 0, 100_000_000, "0.##");
-    private readonly CheckBox _closeOnLimit = new() { Content = "Al tocar un límite, cerrar también su posición" };
+    private readonly CheckBox _closeOnLimit = new() { Content = "When a risk limit is hit, also close its position" };
     private readonly TextBlock _riskNote = new() { Classes = { "faint", "small" }, TextWrapping = TextWrapping.Wrap };
     private Button _applyRisk = null!, _applyParams = null!, _applyConditions = null!;
     private readonly ParameterEditor _params = new();
@@ -75,7 +75,7 @@ internal sealed class LiveStrategyWindow : Window
 
         var lockText = new TextBlock
         {
-            Text = "Bloqueada: el riesgo y los parámetros no se cambian desde acá. Podés verla, detenerla o reanudarla.",
+            Text = "Locked: risk and parameters cannot be changed here. You may view, stop, or resume the strategy.",
             TextWrapping = TextWrapping.Wrap,
             FontSize = 12,
         };
@@ -96,8 +96,8 @@ internal sealed class LiveStrategyWindow : Window
         }
 
         Put(Ui.Field("Size (×)", _size, "1 = como dice la estrategia"), 0);
-        Put(Ui.Field("Max daily loss", _dailyLoss, "0 = sin límite"), 2);
-        Put(Ui.Field("Maximum drawdown", _maxDd, "0 = sin límite"), 4);
+        Put(Ui.Field("Max daily loss", _dailyLoss, "0 = no limit"), 2);
+        Put(Ui.Field("Maximum drawdown", _maxDd, "0 = no limit"), 4);
 
         var body = new StackPanel { Spacing = 18, Margin = new Thickness(22, 18, 22, 18) };
         body.Children.Add(Ui.V(4, _title, _subtitle, _state));
@@ -109,7 +109,7 @@ internal sealed class LiveStrategyWindow : Window
             Note("Solo abre operaciones cuando el mercado está en lo que elijas (lo mide con las velas ya cerradas: tendencia de las últimas 24 horas y volatilidad del último mes). Se aplica ya, sin reiniciar; las salidas siempre pasan."),
             Right(_applyConditions)));
         body.Children.Add(Section("Parameters", _params, Right(_applyParams)));
-        body.Children.Add(Section("Portfolio", _portfolio, Note("Una estrategia está en un solo portafolio tuyo; las que no tienen van al automático (todas las que corren en vivo).")));
+        body.Children.Add(Section("Portfolio", _portfolio, Note("Each strategy belongs to one custom portfolio; unassigned strategies go to the automatic portfolio.")));
         body.Children.Add(Section("Actividad", Ui.Card(_log, 6)));
         Content = new ScrollViewer { Content = body };
 
@@ -179,7 +179,7 @@ internal sealed class LiveStrategyWindow : Window
 
         _fillingPortfolio = true;
         _portfolio.Items.Clear();
-        _portfolio.Items.Add(new ComboBoxItem { Content = "Ninguno (va al automático)", Tag = null });
+        _portfolio.Items.Add(new ComboBoxItem { Content = "None (use automatic portfolio)", Tag = null });
         var defs = LiveStore.LoadPortfolios().Where(d => !d.Auto).ToList();
         foreach (var d in defs) _portfolio.Items.Add(new ComboBoxItem { Content = d.Name, Tag = d.Id });
         string? current = defs.FirstOrDefault(d => d.Members.Contains(_key))?.Id;
@@ -247,7 +247,7 @@ internal sealed class LiveStrategyWindow : Window
             _logCount = count;
             _log.Items.Clear();
             if (lines == null || lines.Count == 0)
-                _log.Items.Add(new ListBoxItem { Content = new TextBlock { Text = e.Running ? "Sin actividad todavía." : "La actividad se ve mientras corre en esta sesión de Trading Hub.", Classes = { "muted", "small" } }, IsEnabled = false });
+                _log.Items.Add(new ListBoxItem { Content = new TextBlock { Text = e.Running ? "No activity yet." : "Activity is shown while running during this Trading Hub session.", Classes = { "muted", "small" } }, IsEnabled = false });
             else
                 foreach (var line in lines.Reverse().Take(200))
                     _log.Items.Add(new ListBoxItem { Content = new TextBlock { Text = line, Classes = { "mono", "small" }, TextWrapping = TextWrapping.Wrap }, Padding = new Thickness(8, 2) });
@@ -320,7 +320,7 @@ internal sealed class LiveStrategyWindow : Window
 
     private async Task ClosePositionAsync()
     {
-        if (!await ConfirmDialog.ShowAsync(this, "Cerrar la posición", $"Se cierra a mercado la posición de «{_entry.Info.Strategy}» ({_entry.Ledger.Position.ToString("0.####", Inv)}). La estrategia sigue corriendo y puede volver a entrar (pausala si no querés).", "Close position", danger: true))
+        if (!await ConfirmDialog.ShowAsync(this, "Close position", $"Se cierra a mercado la posición de «{_entry.Info.Strategy}» ({_entry.Ledger.Position.ToString("0.####", Inv)}). La estrategia sigue corriendo y puede volver a entrar (pausala si no querés).", "Close position", danger: true))
             return;
         _svc.Live.ClosePosition(_entry);
         _status($"{_entry.Info.Strategy}: posición cerrada a mercado");
@@ -331,8 +331,8 @@ internal sealed class LiveStrategyWindow : Window
     private async Task StopAsync(bool close)
     {
         string what =
-            close ? "Se detiene y se cierra su posición a mercado." : "Se detiene; si tiene una posición abierta, queda como está.";
-        if (_entry.ChartStrategy != null && !_entry.Locked) what += " En el gráfico queda en modo visual.";
+            close ? "Stop strategy and close its position at market." : "Stop strategy; any open position remains open.";
+        if (_entry.ChartStrategy != null && !_entry.Locked) what += " The chart remains in visualization-only mode.";
         if (!await ConfirmDialog.ShowAsync(this, "Detener la estrategia", what, close ? "Stop and close" : "Stop", danger: close)) return;
         await _svc.Live.StopAsync(_entry, close);
         _status($"{_entry.Info.Strategy} detenida{(close ? " y posición cerrada" : "")}");
@@ -366,10 +366,10 @@ internal sealed class LiveStrategyWindow : Window
     {
         bool ok = await ConfirmDialog.ShowAsync(this, "Borrar de En vivo",
             $"«{_entry.Info.Strategy}» ({_entry.Info.Symbol} · {_entry.Info.Account}) se detiene{(_entry.ChartStrategy != null ? ", se quita del gráfico" : "")} y deja de aparecer en En vivo. " +
-            "Si tiene una posición abierta, queda como está (cerrala antes si querés).",
+            "An open position will remain unchanged (close it first if needed).",
             "Delete", danger: true);
         if (!ok) return;
-        bool history = _entry.Ledger.Fills.Count > 0 && await ConfirmDialog.ShowAsync(this, "¿Borrar también su historial?",
+        bool history = _entry.Ledger.Fills.Count > 0 && await ConfirmDialog.ShowAsync(this, "Delete its history too?",
             $"Tiene {_entry.Ledger.Trades.Count} operación(es) registradas. Si lo borrás, no se puede recuperar; si lo conservás y la volvés a lanzar igual, sigue con su historia.",
             "Borrar el historial", danger: true);
         var err = await _svc.Live.DeleteAsync(_entry, history);
@@ -400,9 +400,9 @@ internal sealed class LiveStrategyWindow : Window
     {
         var values = _params.Read(_svc.Live.ParametersOf(_entry));
         string text = _entry.Running
-            ? "Se reinicia con los parámetros nuevos (vuelve a calentar con la historia). Si tiene una posición abierta, la sigue gestionando con su stop."
-            : "Se guardan los parámetros nuevos y arranca con ellos.";
-        if (!await ConfirmDialog.ShowAsync(this, "Aplicar parámetros", text, "Apply and restart")) return;
+            ? "Restarts with the new parameters and historical warmup. Any open position continues using its existing stop."
+            : "Save new parameters and start with them.";
+        if (!await ConfirmDialog.ShowAsync(this, "Apply parameters", text, "Apply and restart")) return;
         if (!await ConfirmRealAsync("Restart on REAL account", $"«{_entry.Info.Strategy}» vuelve a operar {_entry.Info.Symbol} en {_entry.Info.Account} con órdenes reales.", "Reiniciar con dinero real")) return;
         var err = await _svc.Live.RestartWithParametersAsync(_entry, values);
         _status(err ?? $"{_entry.Info.Strategy} reiniciada con los parámetros nuevos");
