@@ -36,11 +36,25 @@ def validate_source_edits() -> int:
     for file in sources:
         before = git("show", f"origin/main:{file}")
         after = (ROOT / file).read_text(encoding="utf-8")
-        expected = before
-        for source, target in MAPPING.items():
-            expected = expected.replace('"' + source + '"', '"' + target + '"')
-        if expected != after:
-            errors.append(file)
+        before_lines = before.splitlines(keepends=True)
+        after_lines = after.splitlines(keepends=True)
+        if len(before_lines) != len(after_lines):
+            errors.append(file + ": line count changed")
+            continue
+        for line_number, (original_line, translated_line) in enumerate(zip(before_lines, after_lines), start=1):
+            if original_line == translated_line:
+                continue
+            expected_line = original_line
+            for source, target in MAPPING.items():
+                source_token = '"' + source + '"'
+                target_token = '"' + target + '"'
+                # Only require changes that actually appear on this line.
+                # New glossary entries must not force every UI view to be translated
+                # at once, but any change must still be a reviewed literal.
+                if source_token in expected_line and target_token in translated_line:
+                    expected_line = expected_line.replace(source_token, target_token)
+            if expected_line != translated_line:
+                errors.append(f"{file}:{line_number}")
     print(f"UI source files changed: {len(sources)}")
     print(f"UI literal-only changes: {'PASS' if not errors else 'FAIL'}")
     if errors:
