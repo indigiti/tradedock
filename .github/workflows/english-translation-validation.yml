@@ -17,6 +17,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify English documentation and UI-only edits
+        run: python3 tools/check_english_translation.py
       - name: Install .NET SDK 10
         uses: actions/setup-dotnet@v4
         with:
