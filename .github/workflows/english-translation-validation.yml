@@ -29,3 +29,13 @@ jobs:
         run: dotnet build TradingHub.slnx --configuration Release
       - name: Run regression tests
         run: dotnet test tests/TradingHub.Tests --configuration Release --no-restore
+      - name: Render headless UI smoke scenes (temporary fixtures)
+        run: dotnet run --project tools/TradingHub.UiSnapshot -- /tmp/tradedock-english-ui 4 trading settings connections data strategies
+      - name: Upload rendered UI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tradedock-english-ui-snapshots
+          path: /tmp/tradedock-english-ui/
+          if-no-files-found: warn
+          retention-days: 7
