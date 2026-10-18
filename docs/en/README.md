@@ -12,3 +12,7 @@ This is the English-language guide collection. Trading Hub currently builds for 
 | Reference | [Settings](ajustes.md), [Privacy](privacidad.md), [Development](desarrollo.md), [Windows porting](portar-a-windows.md) |
 
 **Trading risk:** Backtests do not predict future results. Practice in simulation before using a live brokerage account. Source code is publicly available under MIT with the Commons Clause; commercial redistribution and related paid services are restricted.
+
+## Translation progress
+
+See the [localization validation dashboard](TRANSLATION_STATUS.md) for verified checks, remaining Spanish content, and release blockers.
