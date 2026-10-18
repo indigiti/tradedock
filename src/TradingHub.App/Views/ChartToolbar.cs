@@ -42,7 +42,7 @@ internal sealed class ChartToolbar : UserControl
         ("Segundos", new[] { "S5", "S10", "S15", "S30" }),
         ("Minutos", new[] { "M1", "M2", "M3", "M5", "M10", "M15", "M30" }),
         ("Horas", new[] { "H1", "H2", "H4", "H6", "H12" }),
-        ("Días", new[] { "Daily", "Weekly", "Monthly" }),
+        ("Days", new[] { "Daily", "Weekly", "Monthly" }),
         ("Ticks", new[] { "Tick100", "Tick250", "Tick500", "Tick1000" }),
         ("Volumen", new[] { "Volume100", "Volume500", "Volume1000" }),
         ("Rango y otros", new[] { "Range10", "Range20", "Delta50", "Delta100", "Renko10" }),
@@ -55,9 +55,9 @@ internal sealed class ChartToolbar : UserControl
 
     internal static readonly (double Hours, string Label)[] HistoryOptions =
     {
-        (0.5, "30 min"), (1, "1 h"), (1.5, "1,5 h"), (3, "3 h"), (6, "6 h"), (12, "12 h"), (24, "1 día"), (72, "3 días"), (168, "7 días"),
-        (720, "30 días"), (2160, "90 días"), (4380, "6 meses"), (8760, "1 año"), (17520, "2 años"), (43800, "5 años"),
-        (AllHistory, "Todo el historial"), (CustomHistory, "Desde una fecha…"),
+        (0.5, "30 min"), (1, "1 h"), (1.5, "1,5 h"), (3, "3 h"), (6, "6 h"), (12, "12 h"), (24, "1 day"), (72, "3 days"), (168, "7 days"),
+        (720, "30 days"), (2160, "90 days"), (4380, "6 meses"), (8760, "1 year"), (17520, "2 years"), (43800, "5 years"),
+        (AllHistory, "All history"), (CustomHistory, "From a date…"),
     };
 
     public ChartToolbar(TradingView host, bool floating, params Control[] rightControls)
@@ -81,7 +81,7 @@ internal sealed class ChartToolbar : UserControl
         {
             (ChartStyle.Candles, "Velas"),
             (ChartStyle.Bars, "Barras"),
-            (ChartStyle.Line, "Línea"),
+            (ChartStyle.Line, "Line"),
             (ChartStyle.HeikinAshi, "Heikin Ashi"),
             (ChartStyle.Footprint, "Footprint"),
         }, "Tipo de gráfico: velas, barras, línea, Heikin Ashi o footprint");
@@ -125,7 +125,7 @@ internal sealed class ChartToolbar : UserControl
 
         var right = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Margin = new Thickness(12, 0, 0, 0), VerticalAlignment = VerticalAlignment.Top };
         right.Children.Add(_styleBox);
-        right.Children.Add(Ui.Button("Indicadores", MaterialIconKind.FunctionVariant, () => _host.OpenIndicators(_chart)));
+        right.Children.Add(Ui.Button("Indicators", MaterialIconKind.FunctionVariant, () => _host.OpenIndicators(_chart)));
         right.Children.Add(Ui.IconButton(MaterialIconKind.ViewColumnOutline, "Editar footprint (columnas)", () => _host.OpenFootprintEditor(_chart)));
         right.Children.Add(Ui.IconButton(MaterialIconKind.PaletteOutline, "Configuración del gráfico: colores del fondo, las velas, los ejes…", () => _host.OpenChartSettings(_chart)));
         Button? strategies = null;
@@ -294,10 +294,10 @@ internal sealed class ChartToolbar : UserControl
                 _periodFlyout.Hide();
                 SetPeriod(p);
             }
-            else _host.SetStatus("Período inválido. Ejemplos: M3, H2, Tick500, Volume100, Range20");
+            else _host.SetStatus("Invalid period. Examples: M3, H2, Tick500, Volume100, Range20");
         };
 
-        var body = Ui.V(12, Ui.H3("Período"), grid, new Border { Height = 1, Background = Ui.Line }, Ui.H(10, custom, Ui.Faint("Enter para usarlo")),
+        var body = Ui.V(12, Ui.H3("Period"), grid, new Border { Height = 1, Background = Ui.Line }, Ui.H(10, custom, Ui.Faint("Press Enter to use")),
             new TextBlock { Text = "Clic derecho sobre un período: lo pone en la barra del gráfico (o lo saca). Los de la barra se ven en color.", Classes = { "faint", "small" }, TextWrapping = Avalonia.Media.TextWrapping.Wrap });
         body.Margin = new Thickness(16, 14, 16, 14);
         body.Width = 470;
@@ -402,17 +402,17 @@ internal sealed class DrawingToolStrip : UserControl
 
     private static readonly Dictionary<DrawingKind, (MaterialIconKind Icon, string Name)> Info = new()
     {
-        [DrawingKind.HorizontalLine] = (MaterialIconKind.Minus, "Línea horizontal"),
+        [DrawingKind.HorizontalLine] = (MaterialIconKind.Minus, "Horizontal line"),
         [DrawingKind.HorizontalRay] = (MaterialIconKind.ArrowRightThin, "Rayo horizontal"),
-        [DrawingKind.VerticalLine] = (MaterialIconKind.DragVertical, "Línea vertical"),
-        [DrawingKind.TrendLine] = (MaterialIconKind.ChartLineVariant, "Línea de tendencia"),
+        [DrawingKind.VerticalLine] = (MaterialIconKind.DragVertical, "Vertical line"),
+        [DrawingKind.TrendLine] = (MaterialIconKind.ChartLineVariant, "Trend line"),
         [DrawingKind.Ray] = (MaterialIconKind.ArrowTopRightThin, "Rayo"),
-        [DrawingKind.ExtendedLine] = (MaterialIconKind.ArrowExpandHorizontal, "Línea extendida"),
-        [DrawingKind.Rectangle] = (MaterialIconKind.RectangleOutline, "Rectángulo / zona"),
+        [DrawingKind.ExtendedLine] = (MaterialIconKind.ArrowExpandHorizontal, "Extended line"),
+        [DrawingKind.Rectangle] = (MaterialIconKind.RectangleOutline, "Rectangle / zone"),
         [DrawingKind.FibRetracement] = (MaterialIconKind.FormatLineSpacing, "Retroceso de Fibonacci"),
         [DrawingKind.Ruler] = (MaterialIconKind.RulerSquare, "Regla (medir)"),
-        [DrawingKind.LongPosition] = (MaterialIconKind.TrendingUp, "Posición larga (entrada, stop y objetivo)"),
-        [DrawingKind.ShortPosition] = (MaterialIconKind.TrendingDown, "Posición corta (entrada, stop y objetivo)"),
+        [DrawingKind.LongPosition] = (MaterialIconKind.TrendingUp, "Long position (entry, stop, target)"),
+        [DrawingKind.ShortPosition] = (MaterialIconKind.TrendingDown, "Short position (entry, stop, target)"),
         [DrawingKind.Text] = (MaterialIconKind.FormatText, "Texto"),
     };
 
@@ -445,7 +445,7 @@ internal sealed class DrawingToolStrip : UserControl
             if (kinds.Length > 1)
             {
                 var more = new Button { Content = Ui.Icon(MaterialIconKind.ChevronDown, 11, Ui.Text2) }.Classes("toolmore");
-                ToolTip.SetTip(more, "Más herramientas de este grupo");
+                ToolTip.SetTip(more, "More tools in this group");
                 more.Click += (_, _) => ShowGroup(g, more);
                 panel.Children.Add(more);
             }
@@ -456,7 +456,7 @@ internal sealed class DrawingToolStrip : UserControl
         clear.Width = 30;
         clear.Height = 28;
         clear.MinHeight = 0;
-        ToolTip.SetTip(clear, "Borrar todos los dibujos de este instrumento");
+        ToolTip.SetTip(clear, "Delete all drawings for this instrument");
         clear.Click += (_, _) => ClearRequested?.Invoke();
         panel.Children.Add(clear);
         _groups[0].Button.IsChecked = true;
