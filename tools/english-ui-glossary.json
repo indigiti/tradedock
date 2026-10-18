@@ -512,5 +512,20 @@
   "la mitad de los caminos": "half of simulated paths",
   "1 de cada 20 caminos es peor": "one in 20 paths is worse",
   "Riesgo de ruina": "Risk of ruin",
-  "caminos con DD ≥ 50% del capital": "paths with DD ≥ 50% of capital"
+  "caminos con DD ≥ 50% del capital": "paths with DD ≥ 50% of capital",
+  "Apariencia": "Appearance",
+  "Oscuro": "Dark",
+  "Claro": "Light",
+  "Negro": "Black",
+  "Blanco": "White",
+  "Estrategias (C#)": "Strategies (C#)",
+  "Saldo inicial {_svc.Portfolio.BeginBalance:N2}. Las órdenes del simulador se llenan con la cola del libro y el tape real.": "Initial balance {_svc.Portfolio.BeginBalance:N2}. Simulator orders model queue placement and recorded trade flow.",
+  "Versión {typeof(App).Assembly.GetName().Version?.ToString(3)} · .NET {Environment.Version} · Avalonia + SkiaSharp": "Version {typeof(App).Assembly.GetName().Version?.ToString(3)} · .NET {Environment.Version} · Avalonia + SkiaSharp",
+  "Plataforma personal de order flow: footprint, DOM, cinta, indicadores en C#, estrategias y backtesting.": "Personal order-flow trading platform with footprint, DOM, tape, C# indicators, strategies and backtesting.",
+  "Cerrar la ventana no cierra Trading Hub: queda arriba a la derecha, en la barra de menú, con las estrategias en vivo trabajando. Tocando su ícono se abre un panel con las estrategias y las posiciones en tiempo real. Para cerrarla del todo: ⌘Q o «Salir de Trading Hub» en ese panel.": "Closing the window leaves Trading Hub running in the menu bar with active strategies. Use its icon to view live positions. To quit completely, use Command-Q or Quit Trading Hub.",
+  "Las que estaban corriendo cuando se cerró Trading Hub (o se apagó la Mac) vuelven a arrancar solas unos segundos después de abrir, con sus mismos parámetros, tamaño y límites; las pausadas vuelven pausadas. Apagado: esperan que las reanudes desde En vivo.": "Strategies that were running before shutdown resume at startup with their previous parameters, sizing and limits. Paused strategies stay paused. When disabled, resume manually from Live.",
+  "Si el tamaño de una estrategia de futuros pide una fracción del mini (por ejemplo 1 NQ × 0,5), las órdenes van al micro con la misma exposición (5 MNQ), mirando el mismo gráfico. Con minis enteros usa el mini. Con una posición abierta sigue en el mismo contrato y cambia cuando queda plana.": "For fractional mini-futures exposure (for example 0.5 NQ), use the equivalent micro-contract quantity (5 MNQ). Whole mini quantities stay on the mini. Open positions retain their contract until flat.",
+  "Creado por": "Created by",
+  "Tapa cerrada desactivado: al cerrarla, la Mac se duerme como siempre": "Closed-lid mode disabled: closing the lid will sleep the Mac as usual",
+  "Al cerrar la tapa macOS duerme todo. Con esto activado, cuando haya algo corriendo Trading Hub te pide la contraseña de administrador una vez y la Mac sigue funcionando con la tapa cerrada mientras Trading Hub esté abierto. Se deshace solo al cerrar Trading Hub (aunque se cierre de golpe). Con la tapa cerrada la Mac no ventila igual: no la guardes en un bolso así.": "By default macOS sleeps when the lid closes. If enabled while work is running, Trading Hub asks once for administrator permission and keeps the Mac active with the lid closed. The setting reverts when the app exits. Closed-lid ventilation is limited: never store a running Mac in a bag."
 }
